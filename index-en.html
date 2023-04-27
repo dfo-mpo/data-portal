@@ -230,28 +230,28 @@
 			title: 'Pacific Salmon Escapement Dashboard',
 			description: 'Pacific Salmon escapement and recruitment trends by SMU and CU from 1950-2022',
 			imgSrc: 'img/pexels-deane-bayas-3770757.jpg',
-			url: './escapementdashboard.html'
+			href: './escapementdashboard.html'
 		},
 		{
 			title: 'Salmon Scanner',
 			description: 'Brief description of the feature being promoted.',
 			imgSrc: 'img/pexels-james-wheeler-3788089.jpg',
-			url: './salmonscanner.html'
-			// url: 'https://sos-program.shinyapps.io/salmon-scanner/',
+			href: './salmonscanner.html'
+			// href: 'https://sos-program.shinyapps.io/salmon-scanner/',
 			// targetBlank: 1
 		},
 		{
 			title: 'Pacific Salmon Data Inventory',
 			description: 'Brief description of the feature being promoted.',
 			imgSrc: 'img/pexels-pixabay-259804.jpg',
-			url: 'http://dmapps/en/pssi/',
+			href: 'http://dmapps/en/pssi/',
 			targetBlank: 1
 		},
 		{
 			title: 'Sample Power BI Dashboard',
 			description: 'Brief description of the feature being promoted.',
 			imgSrc: 'img/salmon4.png',
-			url: './sampledashboard.html'
+			href: './sampledashboard.html'
 		},
 		{
 			title: 'Restoration Projects',
@@ -295,7 +295,7 @@
 			tileDiv.innerHTML = `
 				<div class="well well-sm eqht-trgt zoom">
 					<div><img src="`+(tile.imgSrc ? tile.imgSrc : 'img/360x203.png')+`" alt=""></div>
-					<h3><a class="stretched-link"`+(tile.url ? ' href="'+tile.url+'"' : '')+(tile.targetBlank==1 ? ' target="_blank"' : '')+`>`+tile.title+`</a></h3>
+					<h3><a class="stretched-link"`+(tile.href ? ' href="'+tile.href+'"' : '')+(tile.targetBlank==1 ? ' target="_blank"' : '')+`>`+tile.title+`</a></h3>
 					<p>`+tile.description+`</p>
 				</div>
 			`;
