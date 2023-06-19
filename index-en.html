@@ -147,6 +147,15 @@
     </div>
 </section>
 
+<section class="container">
+	<br>
+	<ul class="list-inline gc-button" id="button-links">
+		<!-- <li>
+			<a class="btn btn-primary" href="https://www.canada.ca/en.html">SMU-CU Crosswalk</a>
+		</li> -->
+	</ul>
+</section>
+
 <section class="gc-features"></section>
 
 <footer class="pagedetails">
@@ -226,11 +235,29 @@
 
 <script>
 	const tiles = [
+		// {
+		// 	title: 'Pacific Salmon Escapement Dashboard',
+		// 	description: 'Pacific Salmon escapement and recruitment trends by SMU and CU from 1950-2022',
+		// 	imgSrc: 'img/pexels-deane-bayas-3770757.jpg',
+		// 	href: './escapementdashboard.html'
+		// },
 		{
-			title: 'Pacific Salmon Escapement Dashboard',
-			description: 'Pacific Salmon escapement and recruitment trends by SMU and CU from 1950-2022',
+			title: 'BCSHRIF',
+			description: 'Brief description of the feature being promoted.',
 			imgSrc: 'img/pexels-deane-bayas-3770757.jpg',
-			href: './escapementdashboard.html'
+			href: './BCSRIFdashboard.html'
+		},
+		{
+			title: 'Sankey 1',
+			description: 'Brief description of the feature being promoted.',
+			imgSrc: 'img/pexels-photo-1788746.jpg',
+			href: './sankey1.html'
+		},
+		{
+			title: 'Escapement SMU',
+			description: 'Brief description of the feature being promoted.',
+			imgSrc: 'img/pexels-pixabay-259804.jpg',
+			href: './escapementsmu.html'
 		},
 		{
 			title: 'Salmon Scanner',
@@ -240,13 +267,13 @@
 			// href: 'https://sos-program.shinyapps.io/salmon-scanner/',
 			// targetBlank: 1
 		},
-		{
-			title: 'Pacific Salmon Data Inventory',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/pexels-pixabay-259804.jpg',
-			href: 'http://dmapps/en/pssi/',
-			targetBlank: 1
-		},
+		// {
+		// 	title: 'Pacific Salmon Data Inventory',
+		// 	description: 'Brief description of the feature being promoted.',
+		// 	imgSrc: 'img/pexels-pixabay-259804.jpg',
+		// 	href: 'http://dmapps/en/pssi/',
+		// 	targetBlank: 1
+		// },
 		{
 			title: 'Sample Power BI Dashboard',
 			description: 'Brief description of the feature being promoted.',
@@ -305,6 +332,30 @@
 		featuresDiv.appendChild(tilesDiv);
 		document.getElementsByClassName('gc-features')[0].appendChild(featuresDiv);
 	};
+
+	const buttons = [
+		{
+			title: "SMU-CU Crosswalk",
+			href: "https://www.canada.ca/en.html",
+		},
+		{
+			title: "test",
+			href: "https://www.canada.ca/en.html",
+		},
+		{
+			title: "test2",
+			href: "https://www.canada.ca/en.html",
+		}
+	]
+
+	if(buttons) {
+		buttons.forEach (button => {
+			const buttonsLI = document.createElement('li');
+			buttonsLI.innerHTML = `<a class="btn btn-primary" href="`+button.href+`">`+button.title+`</a>`;
+			document.getElementsByClassName('gc-button')[0].appendChild(buttonsLI);
+		});
+	}
+
 </script>
 </body>
 </html>
