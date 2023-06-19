@@ -130,18 +130,20 @@
 
 
 <main class="container" property="mainContentOfPage" resource="#wb-main" typeof="WebPageElement">
-	
-<section class="container">
-	<ul class="list-inline gc-button" id="button-links">
-		<!-- <li>
-			<a class="btn btn-primary" href="https://www.canada.ca/en.html">SMU-CU Crosswalk</a>
-		</li> -->
-	</ul>
-</section>
 
 <section class="container">
-	<div class="bg-cover bg-center" data-bgimg="img/pexels-pok-rie-2049422.jpg">
-	</div>
+
+	<div class="bg-cover bg-center" data-bgimg="img/pexels-pok-rie-2049422.jpg"></div>
+
+	<section class="container">
+		<br>
+		<ul class="list-inline gc-button" id="button-links">	
+			<!-- <li>
+				<a class="btn btn-primary" href="https://www.canada.ca/en.html">SMU-CU Crosswalk</a>
+			</li> -->
+		</ul>
+	</section>
+
     <div class="row">
         <div>
             <h1 property="name" id="wb-cont">Pacific Salmon Data Portal</h1>
@@ -352,17 +354,21 @@
 
 	const buttons = [
 		{
+			title: "About",
+			href: "./about.html",
+		},
+		{
+			title: "Methodology",
+			href: "",
+		},
+		{
+			title: "Business Glossary",
+			href: "https://www.dfo-mpo.gc.ca/transparency-transparence/mtb-ctm/2019/binder-cahier-1/1I-acronyms-acronymes-eng.htm",
+		},
+		{
 			title: "SMU-CU Crosswalk",
 			href: "./SMU-CU-Crosswalk.html",
 		},
-		{
-			title: "Salmon Species",
-			href: "",
-		},
-		{
-			title: "Stock Assessment",
-			href: "",
-		}
 	]
 
 	if(buttons) {
