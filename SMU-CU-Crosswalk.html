@@ -140,10 +140,10 @@
     <div class="row">
         <div>
             <h1 property="name" id="wb-cont">SMU-CU Crosswalk</h1>
-			<p>Projects funded through the BCSRIF program can be explored using the interactive
+			<!-- <p>Projects funded through the BCSRIF program can be explored using the interactive
 				 map-based application. This map represents the geographic distribution of BCSRIF projects
 				  by their associated investment category (Infrastructure, Science partnerships, or Innovation)
-				   and displays pop-up information with summary details of individual projects.</p>
+				   and displays pop-up information with summary details of individual projects.</p> -->
         </div>
     </div>
 </section>
@@ -165,7 +165,6 @@
     <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/flow.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
-    <!-- <script src="data/SMU-CU Crosswalk table.csv"></script> -->
     
     <!-- Chart code -->
     <script>
@@ -207,6 +206,7 @@ var smu_cu = [];
                     paddingRight: 50,
                     nodeWidth: 5,
                     nodeAlign: "justify",
+                    maxWidth: 1000,
                 }));
 
                 series.nodes.labels.template.setAll({
@@ -248,10 +248,42 @@ var smu_cu = [];
 
 
                 for (var i = 1; i < 30; i++) {
-                    dataset.push({ from: smu_cu[i][SPECIES], to: smu_cu[i][AREA], value: 1 });
+                    dataset.push({ from: smu_cu[i][SPECIES], to: smu_cu[i][AREA], value: 1});                    
                     dataset.push({ from: smu_cu[i][AREA], to: smu_cu[i][SMU], value: 1 });
                     dataset.push({ from: smu_cu[i][SMU], to: smu_cu[i][CU], value: 1});
+                    // dataset.push({ from: smu_cu[i][AREA], to: smu_cu[i][SPECIES], value: 1 });
+                    // dataset.push({ from: smu_cu[i][SPECIES], to: smu_cu[i][SMU], value: 1 });
+                    // dataset.push({ from: smu_cu[i][SMU], to: smu_cu[i][CU], value: 1});
                 }
+
+                var uniqueValues = new Set();
+
+                // for (var i = 1; i < 30; i++) {
+                //   var fromValue = smu_cu[i][AREA];
+                //   var toValue = smu_cu[i][SPECIES];
+                
+                //   // Check if the data object already exists in the dataset or has the same from/to values
+                //   if (!uniqueValues.has(fromValue + toValue)) {
+                //     dataset.push({ from: fromValue, to: toValue, value: 1 });
+                //     uniqueValues.add(fromValue + toValue);
+                //   }
+              
+                //   fromValue = smu_cu[i][SPECIES];
+                //   toValue = smu_cu[i][SMU];
+              
+                //   if (!uniqueValues.has(fromValue + toValue)) {
+                //     dataset.push({ from: fromValue, to: toValue, value: 1 });
+                //     uniqueValues.add(fromValue + toValue);
+                //   }
+              
+                //   fromValue = smu_cu[i][SMU];
+                //   toValue = smu_cu[i][CU];
+              
+                //   if (!uniqueValues.has(fromValue + toValue)) {
+                //     dataset.push({ from: fromValue, to: toValue, value: 1 });
+                //     uniqueValues.add(fromValue + toValue);
+                //   }
+                // }
 
                 series.data.setAll(dataset);
             
