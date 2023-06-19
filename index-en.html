@@ -132,6 +132,14 @@
 <main class="container" property="mainContentOfPage" resource="#wb-main" typeof="WebPageElement">
 	
 <section class="container">
+	<ul class="list-inline gc-button" id="button-links">
+		<!-- <li>
+			<a class="btn btn-primary" href="https://www.canada.ca/en.html">SMU-CU Crosswalk</a>
+		</li> -->
+	</ul>
+</section>
+
+<section class="container">
 	<div class="bg-cover bg-center" data-bgimg="img/pexels-pok-rie-2049422.jpg">
 	</div>
     <div class="row">
@@ -147,16 +155,25 @@
     </div>
 </section>
 
-<section class="container">
-	<br>
-	<ul class="list-inline gc-button" id="button-links">
-		<!-- <li>
-			<a class="btn btn-primary" href="https://www.canada.ca/en.html">SMU-CU Crosswalk</a>
-		</li> -->
-	</ul>
-</section>
 
 <section class="gc-features"></section>
+
+<section class="row col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-12 col-sm-5 col-md-4">
+	  <div class="form-inline">
+		<div class="form-group wb-srch-qry">
+		  	<label for="wb-srch-q" class="wb-inv">Search other data products</label>
+		  	<input id="wb-srch-q" list="wb-srch-q-ac" class="wb-srch-q form-control" name="q" type="search" value="" size="28" maxlength="170" placeholder="Search other data products">
+		  	<datalist id="wb-srch-q-ac"></datalist>
+		</div>
+		<div class="form-group submit">
+		  	<button type="submit" id="wb-srch-sub" class="btn btn-primary btn-small" name="wb-srch-sub">
+				<span class="glyphicon glyphicon-search"></span>
+				<span class="wb-inv">Search</span>
+		  	</button>
+		</div>
+	  </div>
+</section>
+
 
 <footer class="pagedetails">
 	<h2 class="wb-inv">Page details</h2>
@@ -247,12 +264,12 @@
 			imgSrc: 'img/pexels-deane-bayas-3770757.jpg',
 			href: './BCSRIFdashboard.html'
 		},
-		{
-			title: 'Sankey 1',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/pexels-photo-1788746.jpg',
-			href: './sankey1.html'
-		},
+		// {
+		// 	title: 'Sankey 1',
+		// 	description: 'Brief description of the feature being promoted.',
+		// 	imgSrc: 'img/pexels-photo-1788746.jpg',
+		// 	href: './sankey1.html'
+		// },
 		{
 			title: 'Escapement SMU',
 			description: 'Brief description of the feature being promoted.',
@@ -274,43 +291,43 @@
 		// 	href: 'http://dmapps/en/pssi/',
 		// 	targetBlank: 1
 		// },
-		{
-			title: 'Sample Power BI Dashboard',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/salmon4.png',
-			href: './sampledashboard.html'
-		},
-		{
-			title: 'Restoration Projects',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/salmon3.png'
-		},
-		{
-			title: 'Pacific Ocean Data',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/salmon2.png'
-		},
-		{
-			title: 'Stock Assessment',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/pexels-photo-3555988.jpg'
-		},
-		{
-			title: 'Aquatic Data',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/pexels-photo-1788746.jpg'
-		},
-		{
-			title: 'Salmon Species',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/pexels-photo-414462.jpg'
-		},
+		// {
+		// 	title: 'Sample Power BI Dashboard',
+		// 	description: 'Brief description of the feature being promoted.',
+		// 	imgSrc: 'img/salmon4.png',
+		// 	href: './sampledashboard.html'
+		// },
+		// {
+		// 	title: 'Restoration Projects',
+		// 	description: 'Brief description of the feature being promoted.',
+		// 	imgSrc: 'img/salmon3.png'
+		// },
+		// {
+		// 	title: 'Pacific Ocean Data',
+		// 	description: 'Brief description of the feature being promoted.',
+		// 	imgSrc: 'img/salmon2.png'
+		// },
+		// {
+		// 	title: 'Stock Assessment',
+		// 	description: 'Brief description of the feature being promoted.',
+		// 	imgSrc: 'img/pexels-photo-3555988.jpg'
+		// },
+		// {
+		// 	title: 'Aquatic Data',
+		// 	description: 'Brief description of the feature being promoted.',
+		// 	imgSrc: 'img/pexels-photo-1788746.jpg'
+		// },
+		// {
+		// 	title: 'Salmon Species',
+		// 	description: 'Brief description of the feature being promoted.',
+		// 	imgSrc: 'img/pexels-photo-414462.jpg'
+		// },
 	];
 
 	if (tiles) {
 		const featuresDiv = document.createElement('div');
 		featuresDiv.classList.add('col-lg-12');
-		featuresDiv.innerHTML = '<h2>Features</h2>';
+		featuresDiv.innerHTML = '<h2>Featured Data Products</h2>';
 
 		const tilesDiv = document.createElement('div');
 		tilesDiv.classList.add('row');
@@ -339,12 +356,12 @@
 			href: "/SMU-CU-Crosswalk.html",
 		},
 		{
-			title: "test",
-			href: "https://www.canada.ca/en.html",
+			title: "Salmon Species",
+			href: "",
 		},
 		{
-			title: "test2",
-			href: "https://www.canada.ca/en.html",
+			title: "Stock Assessment",
+			href: "",
 		}
 	]
 
