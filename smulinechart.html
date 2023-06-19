@@ -4,11 +4,11 @@
 <head>
 <meta charset="utf-8">
 <!-- Web Experience Toolkit (WET) / Boîte à outils de l'expérience Web (BOEW) wet-boew.github.io/wet-boew/License-en.html / wet-boew.github.io/wet-boew/Licence-fr.html -->
-<title>Pacific Salmon Data Portal</title>
+<title>BC Salmon Restoration and Innovation Fund Projects</title>
 <meta content="width=device-width, initial-scale=1" name="viewport">
 <meta name="description" content=" " />
 <meta name="author" content=" "/>
-<meta name="dcterms.title" content="Pacific Salmon Data Portal"/>
+<meta name="dcterms.title" content="Content page"/>
 <meta name="dcterms.description" content=" "/>
 <meta name="dcterms.creator" content=" "/>
 <meta name="dcterms.language" content="eng"/>
@@ -27,8 +27,6 @@
 <noscript>
 	<link rel="stylesheet" href="./wet-boew/css/noscript.min.css" />
 </noscript>
-
-<link rel="stylesheet" href="css/styles.css">
 
 </head>
 <body vocab="http://schema.org/" typeof="WebPage"><nav>
@@ -120,6 +118,13 @@
 				</a>
 				<meta property="position" content="1">
 			</li>
+
+			<li property="itemListElement" typeof="ListItem">
+				<a property="item" typeof="WebPage" href="./index-en.html">
+					<span property="name">Pacific Salmon Data Portal</span>
+				</a>
+				<meta property="position" content="1">
+			</li>
 		</ol>
 	</div>
 </nav>
@@ -132,47 +137,256 @@
 <main class="container" property="mainContentOfPage" resource="#wb-main" typeof="WebPageElement">
 	
 <section class="container">
-	<ul class="list-inline gc-button" id="button-links">
-		<!-- <li>
-			<a class="btn btn-primary" href="https://www.canada.ca/en.html">SMU-CU Crosswalk</a>
-		</li> -->
-	</ul>
-</section>
-
-<section class="container">
-	<div class="bg-cover bg-center" data-bgimg="img/pexels-pok-rie-2049422.jpg">
-	</div>
+	
     <div class="row">
         <div>
-            <h1 property="name" id="wb-cont">Pacific Salmon Data Portal</h1>
-            <p>The development of a comprehensive Pacific Salmon Data Portal is a key deliverable that</p>
-			<ul>
-				<li>Provides better transparency, increases efficiency, and improves data management and governance, data stewardship, and analytics; and</li>
-				<li>Centralizes and standardizes DFO products for easier access and collaboration</li>
-			</ul>
-			<p>For more information about the Pacific Salmon Data Portal, please visit our <a href="./about.html">about page</a>.</p>
+            <h1 property="name" id="wb-cont">Escapement SMU Data</h1>
+			<p>Salmon escapement data of different species over time.</p>
         </div>
     </div>
 </section>
 
 
-<section class="gc-features"></section>
 
-<section class="row col-lg-offset-0 col-md-offset-0 col-sm-offset-0 col-xs-12 col-sm-5 col-md-4">
-	  <div class="form-inline">
-		<div class="form-group wb-srch-qry">
-		  	<label for="wb-srch-q" class="wb-inv">Search other data products</label>
-		  	<input id="wb-srch-q" list="wb-srch-q-ac" class="wb-srch-q form-control" name="q" type="search" value="" size="28" maxlength="170" placeholder="Search other data products">
-		  	<datalist id="wb-srch-q-ac"></datalist>
-		</div>
-		<div class="form-group submit">
-		  	<button type="submit" id="wb-srch-sub" class="btn btn-primary btn-small" name="wb-srch-sub">
-				<span class="glyphicon glyphicon-search"></span>
-				<span class="wb-inv">Search</span>
-		  	</button>
-		</div>
-	  </div>
+<section class="container">
+<!-- Styles -->
+<style>
+    #chartdiv {
+      width: 100%;
+      height: 500px;
+    }
+    </style>
+    
+    <!-- Resources -->
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+    <!-- Excel Sheet Conversion Code -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/xlsx.js"></script>
+    <script>
+        window.addEventListener('DOMContentLoaded', readCSV);
+
+        function readCSV() {
+            const csvFilePath = 'data/Escapement_SMU.csv';
+
+            fetch(csvFilePath)
+                .then(response => response.text())
+                .then(csvContent => {return processData(csvContent)})
+                .then(data => {
+                    console.log(data[4]);
+                    createVisualization(data)})
+                .catch(error => console.error('Error reading CSV file:', error));
+        }
+
+        function processData(csvContent) {
+            const lines = csvContent.split('\n');
+            const headers = lines[0].split(',');
+            var data = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const currentLine = lines[i].split(',');
+                console.log(currentLine[2], currentLine[4]);
+                if(i > 5 && currentLine[0] === data[data.length-1].species && new Date(currentLine[2]).getTime() === data[data.length-1].date){
+                    data[data.length-1].total_escapement = Number(currentLine[4]) + data[data.length-1].total_escapement;
+                } else {
+                data.push({species: currentLine[0], date: (new Date(currentLine[2]).getTime()), total_escapement: Number(currentLine[4])});
+            }
+            }
+           
+            return data;
+        }
+    </script>
+    
+    <!-- Chart code -->
+    <script>
+    function createVisualization(data){
+    am5.ready(function() {
+    
+
+        
+    // Create root element
+    // https://www.amcharts.com/docs/v5/getting-started/#Root_element
+    var root = am5.Root.new("chartdiv");
+    
+    // Set themes
+    // https://www.amcharts.com/docs/v5/concepts/themes/
+    root.setThemes([
+      am5themes_Animated.new(root)
+    ]);
+    
+    // root.defaultTheme.rule("ColorSet").set("colors", [
+    // am5.color(0x095256),
+    // am5.color(0x087f8c),
+    // am5.color(0x5aaa95),
+    // am5.color(0x86a873),
+    // am5.color(0xbb9f06)
+    // ]);
+    // Create chart
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/
+    var chart = root.container.children.push(am5xy.XYChart.new(root, {
+      panX: true,
+      panY: true,
+      wheelX: "panX",
+      wheelY: "zoomX",
+      pinchZoomX:true
+    }));
+    
+    // Add cursor
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/cursor/
+    var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+      behavior: "none"
+    }));
+    cursor.lineY.set("visible", false);
+    
+    // Create axes
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
+    var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+      baseInterval: { timeUnit: "year", count: 1 },
+      renderer: am5xy.AxisRendererX.new(root, {}),
+      tooltip: am5.Tooltip.new(root, {})
+    }));
+    
+    var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+      renderer: am5xy.AxisRendererY.new(root, {})
+    }));
+    
+    // Add series
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
+    var chinook_series = chart.series.push(am5xy.LineSeries.new(root, {
+      name: "Chinook Salmon",
+      xAxis: xAxis,
+      yAxis: yAxis,
+      valueYField: "total_escapement",
+      valueXField: "date",
+      tooltip: am5.Tooltip.new(root, {
+        labelText: "{name}: {valueY}"
+      })
+    }));
+
+    var sockeye_series = chart.series.push(am5xy.LineSeries.new(root, {
+      name: "Sockeye Salmon",
+      xAxis: xAxis,
+      yAxis: yAxis,
+      valueYField: "total_escapement",
+      valueXField: "date",
+      tooltip: am5.Tooltip.new(root, {
+        labelText: "{name}: {valueY}"
+      })
+    }));
+
+    var chum_series = chart.series.push(am5xy.LineSeries.new(root, {
+      name: "Chum Salmon",
+      xAxis: xAxis,
+      yAxis: yAxis,
+      valueYField: "total_escapement",
+      valueXField: "date",
+      tooltip: am5.Tooltip.new(root, {
+        labelText: "{name}: {valueY}"
+      })
+    }));
+
+    var coho_series = chart.series.push(am5xy.LineSeries.new(root, {
+      name: "Coho Salmon",
+      xAxis: xAxis,
+      yAxis: yAxis,
+      valueYField: "total_escapement",
+      valueXField: "date",
+      tooltip: am5.Tooltip.new(root, {
+        labelText: "{name}: {valueY}"
+      })
+    }));
+
+    var pink_series = chart.series.push(am5xy.LineSeries.new(root, {
+      name: "Pink Salmon",
+      xAxis: xAxis,
+      yAxis: yAxis,
+      valueYField: "total_escapement",
+      valueXField: "date",
+      tooltip: am5.Tooltip.new(root, {
+        labelText: "{name}: {valueY}"
+      })
+    }));
+    
+    // Add scrollbar
+    // https://www.amcharts.com/docs/v5/charts/xy-chart/scrollbars/
+    var scrollbar = chart.set("scrollbarX", am5xy.XYChartScrollbar.new(root, {
+      orientation: "horizontal",
+      height: 60
+    }));
+    
+    var sbDateAxis = scrollbar.chart.xAxes.push(am5xy.DateAxis.new(root, {
+      baseInterval: {
+        timeUnit: "year",
+        count: 1
+      },
+      renderer: am5xy.AxisRendererX.new(root, {})
+    }));
+    
+    var sbValueAxis = scrollbar.chart.yAxes.push(
+      am5xy.ValueAxis.new(root, {
+        renderer: am5xy.AxisRendererY.new(root, {})
+      })
+    );
+    
+    var sbSeries = scrollbar.chart.series.push(am5xy.LineSeries.new(root, {
+      valueYField: "total_escapement",
+      valueXField: "date",
+      xAxis: sbDateAxis,
+      yAxis: sbValueAxis
+    }));
+    
+    var temp = data;
+    var chinook = [];
+    var sockeye = [];
+    var chum = [];
+    var coho = [];
+    var pink = [];
+    for(i = 0; i < temp.length-1; i++){
+        if(temp[i].species === "Chinook" && temp[i].total_escapement != 0){
+            chinook.push(temp[i])
+        }
+        if(temp[i].species === "Sockeye" && temp[i].total_escapement != 0){
+            sockeye.push(temp[i])
+        }
+        if(temp[i].species === "Chum"&& temp[i].total_escapement != 0){
+            chum.push(temp[i])
+        }
+        if(temp[i].species === "Coho"&& temp[i].total_escapement != 0){
+            coho.push(temp[i])
+        }
+        if(temp[i].species === "Pink"&& temp[i].total_escapement != 0){
+            pink.push(temp[i])
+        }
+    }
+
+    // data = data1;
+    // console.log(data[40].total_escapement);
+    chinook_series.data.setAll(chinook);
+    sockeye_series.data.setAll(sockeye);
+    pink_series.data.setAll(pink);
+    coho_series.data.setAll(coho);
+    chum_series.data.setAll(chum);
+    sbSeries.data.setAll(data);
+    
+    // Make stuff animate on load
+    // https://www.amcharts.com/docs/v5/concepts/animations/
+    chinook_series.appear(1000);
+    sockeye_series.appear(1000);
+    pink_series.appear(1000);
+    coho_series.appear(1000);
+    chum_series.appear(1000);
+    chart.appear(1000, 100);
+    
+    }); // end am5.ready()
+}
+    </script>
+    
+    <!-- HTML -->
+    <div id="chartdiv"></div>
 </section>
+
 
 
 <footer class="pagedetails">
@@ -249,130 +463,5 @@
 
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
-
-<script>
-	const tiles = [
-		// {
-		// 	title: 'Pacific Salmon Escapement Dashboard',
-		// 	description: 'Pacific Salmon escapement and recruitment trends by SMU and CU from 1950-2022',
-		// 	imgSrc: 'img/pexels-deane-bayas-3770757.jpg',
-		// 	href: './escapementdashboard.html'
-		// },
-		{
-			title: 'BCSRIF',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/pexels-deane-bayas-3770757.jpg',
-			href: './BCSRIFdashboard.html'
-		},
-		// {
-		// 	title: 'Sankey 1',
-		// 	description: 'Brief description of the feature being promoted.',
-		// 	imgSrc: 'img/pexels-photo-1788746.jpg',
-		// 	href: './sankey1.html'
-		// },
-		{
-			title: 'Escapement SMU',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/pexels-pixabay-259804.jpg',
-			href: './smulinechart.html'
-		},
-		{
-			title: 'Salmon Scanner',
-			description: 'Brief description of the feature being promoted.',
-			imgSrc: 'img/pexels-james-wheeler-3788089.jpg',
-			href: './salmonscanner.html'
-			// href: 'https://sos-program.shinyapps.io/salmon-scanner/',
-			// targetBlank: 1
-		},
-		// {
-		// 	title: 'Pacific Salmon Data Inventory',
-		// 	description: 'Brief description of the feature being promoted.',
-		// 	imgSrc: 'img/pexels-pixabay-259804.jpg',
-		// 	href: 'http://dmapps/en/pssi/',
-		// 	targetBlank: 1
-		// },
-		// {
-		// 	title: 'Sample Power BI Dashboard',
-		// 	description: 'Brief description of the feature being promoted.',
-		// 	imgSrc: 'img/salmon4.png',
-		// 	href: './sampledashboard.html'
-		// },
-		// {
-		// 	title: 'Restoration Projects',
-		// 	description: 'Brief description of the feature being promoted.',
-		// 	imgSrc: 'img/salmon3.png'
-		// },
-		// {
-		// 	title: 'Pacific Ocean Data',
-		// 	description: 'Brief description of the feature being promoted.',
-		// 	imgSrc: 'img/salmon2.png'
-		// },
-		// {
-		// 	title: 'Stock Assessment',
-		// 	description: 'Brief description of the feature being promoted.',
-		// 	imgSrc: 'img/pexels-photo-3555988.jpg'
-		// },
-		// {
-		// 	title: 'Aquatic Data',
-		// 	description: 'Brief description of the feature being promoted.',
-		// 	imgSrc: 'img/pexels-photo-1788746.jpg'
-		// },
-		// {
-		// 	title: 'Salmon Species',
-		// 	description: 'Brief description of the feature being promoted.',
-		// 	imgSrc: 'img/pexels-photo-414462.jpg'
-		// },
-	];
-
-	if (tiles) {
-		const featuresDiv = document.createElement('div');
-		featuresDiv.classList.add('col-lg-12');
-		featuresDiv.innerHTML = '<h2>Featured Data Products</h2>';
-
-		const tilesDiv = document.createElement('div');
-		tilesDiv.classList.add('row');
-		tilesDiv.classList.add('wb-eqht-grd');
-
-		tiles.forEach ( tile => {
-			const tileDiv = document.createElement('div');
-			tileDiv.classList.add('col-sm-4');
-			tileDiv.innerHTML = `
-				<div class="well well-sm eqht-trgt zoom">
-					<div><img src="`+(tile.imgSrc ? tile.imgSrc : 'img/360x203.png')+`" alt=""></div>
-					<h3><a class="stretched-link"`+(tile.href ? ' href="'+tile.href+'"' : '')+(tile.targetBlank==1 ? ' target="_blank"' : '')+`>`+tile.title+`</a></h3>
-					<p>`+tile.description+`</p>
-				</div>
-			`;
-			tilesDiv.appendChild(tileDiv);
-		});
-
-		featuresDiv.appendChild(tilesDiv);
-		document.getElementsByClassName('gc-features')[0].appendChild(featuresDiv);
-	};
-
-	const buttons = [
-		{
-			title: "SMU-CU Crosswalk",
-			href: "./SMU-CU-Crosswalk.html",
-		},
-		{
-			title: "Salmon Species",
-			href: "",
-		},
-		{
-			title: "Stock Assessment",
-			href: "",
-		}
-	]
-
-	if(buttons) {
-		buttons.forEach (button => {
-			const buttonsLI = document.createElement('li');
-			buttonsLI.innerHTML = `<a class="btn btn-primary" href="`+button.href+`">`+button.title+`</a>`;
-			document.getElementsByClassName('gc-button')[0].appendChild(buttonsLI);
-		});
-	}
-
-</script>
 </body>
 </html>
