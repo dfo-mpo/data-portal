@@ -246,13 +246,37 @@
 					border-bottom: 1px solid rgba(255, 255, 255, .5);
 					transition: all 500ms cubic-bezier(0, 0.110, 0.35, 2);
 				}
+
+				.result-box {
+					background-color: #f2f2f2;
+					border: 1px solid #ccc;
+					padding: 10px;
+					border-radius: 4px;
+					margin-top: 10px;
+					display: none;
+				}
+
+				.result-list {
+					list-style-type: none;
+					padding: 0;
+					margin: 0;
+				}
+
+				.result-list li {
+					padding: 5px;
+					cursor: pointer;
+				}
+
+				.result-list li:hover {
+					background-color: #e0e0e0;
+				}
 			</style>
 
 			<div class="search-box">
 				<button class="btn-search" onclick="searchList()"><i class="fas fa-search"></i></button>
 				<input type="text" class="input-search" id="search-input" placeholder="Type to Search...">
+				<div id="result-box" class="result-box"></div>
 			</div>
-			<ul id="result-list"></ul>
 
 			<!-- <div class="row">
         <div>
@@ -467,31 +491,53 @@
 		};
 
 
+		const searchInput = document.getElementById('search-input');
+
+		// Add keyup event listener
+		searchInput.addEventListener('keyup', searchList);
+
 		function searchList() {
 			// Get the search input value
-			const searchInput = document.getElementById('search-input');
 			const query = searchInput.value.toLowerCase();
 
 			// Clear previous search results
-			const resultList = document.getElementById('result-list');
-			resultList.innerHTML = '';
+			const resultBox = document.getElementById('result-box');
+			resultBox.innerHTML = '';
 
 			// Perform the search
 			const matchingItems = tiles.filter(item => {
 
-				const title = item.title.toLowerCase();
-				return title.includes(query);
+				if (query.length > 0) {
+					const title = item.title.toLowerCase();
+					return title.includes(query);
+				}
 			});
 
 			// Display the search results
-			matchingItems.forEach(item => {
-				const listItem = document.createElement('li');
-				listItem.textContent = item;
-				resultList.appendChild(listItem);
-			});
+			if (matchingItems.length > 0) {
+				const resultList = document.createElement('ul');
+				resultList.classList.add('result-list');
+				matchingItems.forEach(item => {
+					const listItem = document.createElement('li');
+					listItem.textContent = item.title;
 
-			console.log(matchingItems);
+					const handleClick = () => {
+						window.location.href = item.href;
+					}
+
+					listItem.addEventListener('click', handleClick);
+					listItem.addEventListener('mousedown', handleClick);
+					
+					resultList.appendChild(listItem);
+				});
+				resultBox.appendChild(resultList);
+				resultBox.style.display = 'block'; // Show the result box
+			} else {
+				resultBox.textContent = 'No matching items found.';
+				resultBox.style.display = 'none'; // Hide the result box
+			}
 		}
+
 
 
 
