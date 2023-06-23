@@ -161,6 +161,8 @@
     <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
     <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/plugins/exporting.js"></script>
+    <link rel="stylesheet" href="css/chart.css">
 
     <!-- Excel Sheet Conversion Code -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.8.0/jszip.js"></script>
@@ -215,7 +217,6 @@
             return transformed_data;
         }
     </script>
-    
     <!-- Chart code -->
     <script>
     function createVisualization(data){
@@ -256,6 +257,13 @@
             orientation: "horizontal"
             }));
 
+            chart.get("colors").set("colors", [
+            am5.color(0x845EC2),
+            am5.color(0xD65DB1),
+            am5.color(0xFF6F91),
+            am5.color(0xFF9671),
+            am5.color(0xFFC75F)
+            ]);
 
             // Create axes
             // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
@@ -336,8 +344,27 @@
             makeSeries("Yukon", "YUKON");
             makeSeries("North Coast", "NORTH COAST");
 
+            
+            // Create Associated Table - Relevant Source: https://www.amcharts.com/docs/v5/concepts/exporting/exporting-api/
+            var exporting = am5plugins_exporting.Exporting.new(root, {
+            menu: am5plugins_exporting.ExportingMenu.new(root, {}),
+            dataSource: data,
+            htmlOptions: {
+                emptyAs: "0",
+                addColumnNames: true,
+                tableClass: "chart-data",
+                rowClass: "chart-data-row",
+                headerClass: "chart-data-header",
+                cellClass: "chart-data-cell"
+            }
+            });
 
-
+            // Set up export of data as an HTML table
+            exporting.getHTML().then(function(html) {
+            var div = document.createElement("div");
+            div.innerHTML = html;
+            root.dom.parentNode.insertBefore(div, root.dom.nextSibling);
+            });
             // Make stuff animate on load
             // https://www.amcharts.com/docs/v5/concepts/animations/
             chart.appear(1000, 100);
@@ -345,9 +372,9 @@
         }); // end am5.ready()
 }
     </script>
-    
-    <!-- HTML -->
-    <div id="chartdiv"></div>
+        <!-- HTML -->
+        <div id="chartdiv"></div>
+        <!-- <div id="chartdata"></div> -->
 </section>
 
 
