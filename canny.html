@@ -33,15 +33,16 @@
 .tab-container {
   width: 100%;
   background-color: #f1f1f1;
+	padding: 0;
 }
 
-.tabs {
+.main-tabs {
   overflow: hidden;
 	width: 1170px;
 	margin: 0 auto;
 }
 
-.tabs a {
+.main-tabs a {
   float: left;
   border: none;
   outline: none;
@@ -52,11 +53,11 @@
   color: black;
 }
 
-.tabs a:hover {
+.main-tabs a:hover {
   background-color: #ddd;
 }
 
-.tabs a.active {
+.main-tabs a.active {
   background-color: #ccc;
 }
 
@@ -66,6 +67,26 @@
 
 .tabcontent {
   display: none;
+}
+
+.sub-tabs a {
+	font-size: 16px;
+	float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 8px 16px;
+  transition: 0.3s;
+  text-decoration: none;
+  color: black;
+}
+
+.sub-tabs a:hover {
+  background-color: #ddd;
+}
+
+.sub-tabs a.active {
+  background-color: #ccc;
 }
 
 
@@ -127,7 +148,7 @@
 		</div>
 	</div>
 	<hr>
-	<div class="container">
+	<!-- <div class="container">
 		<div class="row"><div class="col-md-8">
 					<nav class="gcweb-menu" typeof="SiteNavigationElement">
 	<h2 class="wb-inv">Menu</h2>
@@ -150,8 +171,12 @@
 </nav>
 
 				</div></div>
-	</div>
-	<nav id="wb-bc" property="breadcrumb">
+	</div> -->
+
+
+
+
+	<!-- <nav id="wb-bc" property="breadcrumb">
 	<h2>You are here:</h2>
 	<div class="container">
 		<ol class="breadcrumb" typeof="BreadcrumbList">
@@ -170,21 +195,17 @@
 			</li>
 		</ol>
 	</div>
-</nav>
+</nav> -->
 
 
 </header>
 
-<section class="container full-width">
-  <div class="tab-container">
-    <div id="tabs" class="tabs">
-      <a href="#" class="tablinks" onclick="openTab(event, 'tab1')">BUGS</a>
-      <a href="#" class="tablinks" onclick="openTab(event, 'tab2')" id="defaultOpen">FEATURE REQUESTS</a>
-      <a href="#" target="_blank">NAV LINK 1</a>
-			<a href="#" target="_blank">NAV LINK 2</a>
-			<a href="#" target="_blank">NAV LINK 3</a>
-    </div>
-  </div>
+<section class="container full-width tab-container">
+	<div class="main-tabs">
+		<a href="#" target="_blank">NAV LINK 1</a>
+		<a href="#" target="_blank">NAV LINK 2</a>
+		<a href="#" target="_blank">NAV LINK 3</a>
+	</div>
 </section>
 
 <main class="container" property="mainContentOfPage" resource="#wb-main" typeof="WebPageElement">
@@ -197,6 +218,19 @@
 			</div>
 	</div>
 </section>
+
+
+
+<section class="container full-width tab-container">
+    <div class="sub-tabs">
+      <a href="#" class="tablinks" onclick="openTab(event, 'tab1')">BUGS</a>
+      <a href="#" class="tablinks" onclick="openTab(event, 'tab2')" id="defaultOpen">FEATURE REQUESTS</a>
+      <a href="#" target="_blank">NAV LINK 1</a>
+    </div>
+</section>
+
+<br>
+
 
 <section class="container">
 	<div id="tab1" class="tabcontent">
@@ -318,7 +352,7 @@
 <!-- Latest compiled and minified JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-<script>
+<!-- <script>
 	// Resizing iframe element responsively
 	const iframe = document.getElementsByClassName('resize-iframe')[0];
 
@@ -331,7 +365,7 @@
 
 	window.addEventListener('resize', resizeIframe);
 	window.addEventListener('load', resizeIframe);
-</script>
+</script> -->
 
 <script>
 	document.getElementById("defaultOpen").click();
