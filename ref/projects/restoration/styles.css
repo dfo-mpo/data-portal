@@ -1,0 +1,71 @@
+/* Styles for Data Container */
+#dataContainer {
+  width: calc(50% - 20px);
+  float: left;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Styles for Data Filter Container */
+#dataFilterContainer {
+  margin-bottom: 20px;
+}
+
+select {
+  width: 100%;
+}
+
+/* Styles for Chart Container */
+#chartContainer {
+  margin-bottom: 20px;
+}
+
+/* Styles for Data Table Container */
+#dataTableContainer {
+  margin-bottom: 20px;
+}
+
+/* Styles for Data Table */
+#dataTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#dataTable th, #dataTable td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#dataTable th {
+  background-color: #f2f2f2;
+}
+
+#dataTable tbody tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+#dataTable tbody tr:hover {
+  background-color: #ddd;
+}
+
+/* Styles for Map Container */
+#mapContainer {
+  width: calc(50% - 20px);
+  float: right;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Styles for Line Chart Canvas */
+#lineChart {
+  width: 100%;
+  height: 300px;
+  border: 1px solid #ddd;
+}
+
+/* Styles for Map */
+#map {
+  width: 100%;
+  height: 600px;
+  border: 1px solid #ddd;
+}

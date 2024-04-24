@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restoration</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+</head>
+<body>
+    <!-- Dashboard Container -->
+    <div id="dashboardContainer">
+        <!-- Data Container -->
+        <div id="dataContainer">
+            <h2>Data Filters</h2>
+            <div id="dataFilterContainer">
+                <!-- Project Name Selector -->
+                <label for="projectNameSelector">Project Name:</label>
+                <select id="projectNameSelector"></select>
+                <br><br>
+                <!-- Species Selector -->
+                <label for="speciesSelector">Species:</label>
+                <select id="speciesSelector"></select>
+                <br><br>
+                <!-- C Name Selector -->
+                <label for="cuSelector">CU Name:</label><select id="cuSelector">
+                </select>
+                <br><br>
+                <!-- S Name Selector -->
+                <label for="smuSelector">SMU Name:</label>
+                <select id="smuSelector"></select>
+                <br><br>
+            </div>
+            <!-- Chart Container -->
+            <div id="chartContainer">
+                <!-- <h2>Line Chart</h2> -->
+                <div id="lineChart"></div>
+            </div>
+            <!-- Data Table Container -->
+            <div id="dataTableContainer">
+                <h2>Project Details</h2>
+                <table id="dataTable">
+                    <thead>
+                        <tr>
+                            <th>Project Name</th>
+                            <th>Project Lead</th>
+                            <th>Project Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="dataBody">
+                        <!-- Table rows will be dynamically added via JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- Map Container -->
+        <div id="mapContainer">
+            <!-- <h2>Map Visualization</h2> -->
+            <div id="map"></div>
+        </div>
+    </div>
+
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/maps/modules/accessibility.js"></script>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- <script src="csv2json.js"></script> -->
+    <script src="getdata.js"></script>
+    <script src="chart.js"></script>
+    <script src="map.js"></script>
+    <script src="restoration.js"></script>
+
+</body>
+</html>
