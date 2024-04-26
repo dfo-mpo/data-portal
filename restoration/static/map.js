@@ -1,14 +1,14 @@
 const geojsonLayers = [
+  //{
+  //  filename: document.body.getAttribute('data-geojson-ck'),
+  //  fillColor: '#3388ff',
+  //  name: 'CU Chinook'
+  //},
   {
-    filename: document.body.getAttribute('data-geojson-ck'),
-    fillColor: '#3388ff',
-    name: 'CU Chinook'
-  },
-  // {
-  //   filename: document.body.getAttribute('data-geojson-co'),
-  //   fillColor: 'red',
-  //   name: 'CU Coho'
-  // }
+     filename: document.body.getAttribute('data-geojson-co'),
+     fillColor: 'red',
+     name: 'CU Coho'
+  }
 ];
 
 function createMarkers(map, locationData) {

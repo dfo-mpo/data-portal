@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html class="no-js" lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<title>Home</title>
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<meta name="description" content=" " />
+	<!-- Icons Font Awesome (to access icons, import Font Awesome) -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous">
+
+	<!-- GC Design System -->
+	<link rel="stylesheet" href="https://cdn.design-system.alpha.canada.ca/@cdssnc/gcds-components@latest/dist/gcds/gcds.css">
+	<script type="module" src="https://cdn.design-system.alpha.canada.ca/@cdssnc/gcds-components@latest/dist/gcds/gcds.esm.js"></script>
+	<script nomodule src="https://cdn.design-system.alpha.canada.ca/@cdssnc/gcds-components@latest/dist/gcds/gcds.js"></script>
+	<style>
+		body{
+			font-family: Arial, Helvetica, sans-serif;
+		}
+		.menu-title{
+			margin-right: 210px !important;
+			margin-left: 0px;
+		}
+
+		gcds-top-nav gcds-nav-link{
+			font-size: 1.3em;
+			font-family: Arial, Helvetica, sans-serif;
+
+		}
+		.pill{
+			width: 70px;
+			height: 5px;
+			background-color: rgb(166, 42, 30);
+			border-radius: 50px;
+		}
+		
+	</style>
+</head>
+<body>
+	{% include 'header.html' %}
+	{% block content %}
+
+	{% endblock %}
+	{% include 'footer.html' %}
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.js"></script>
+	<script src="https://wet-boew.github.io/themes-dist/GCWeb/wet-boew/js/wet-boew.min.js"></script>
+	<script src="https://wet-boew.github.io/themes-dist/GCWeb/GCWeb/js/theme.min.js"></script>
+</body>
+</html>

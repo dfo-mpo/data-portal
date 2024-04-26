@@ -9,7 +9,7 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse, Stre
 # def home(request):
 #     return render(request, 'restoration.html')
 
-def my_view(request):
+def restoration_view(request):
     # Paths to your static files are generated using the 'static' template tag function
     css_path = static('/styles.css')
     csvfile_path = static('/data/dataset_sample_final.csv')
