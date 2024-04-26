@@ -103,6 +103,13 @@ dist
 # TernJS port file
 .tern-port
 
+# Django #
+*.log
+*.pot
+*.pyc
+__pycache__/
+db.sqlite3
+
 .venv/
 venv/
 *.geojson
