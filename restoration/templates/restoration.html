@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Restoration</title>
     {% load static %}
-    <link rel="stylesheet" href="{% url 'css-path' %}">
+    <link rel="stylesheet" href="{{css_file}}" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />    
@@ -68,11 +68,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
 
-    <script src="{% url 'utils-path' %}"></script>
-    <script src="{% url 'getdata-path' %}"></script>
-    <script src="{% url 'chart-path' %}"></script>
-    <script src="{% url 'map-path' %}"></script>
-    <script src="{% url 'datatable-path' %}"></script>
-    <script src="{% url 'restoration-path' %}"></script>
+    <script src="{{scripts_files.utils}}"></script>
+    <script src="{{scripts_files.getdata}}"></script>
+    <script src="{{scripts_files.map}}"></script>
+    <script src="{{scripts_files.chart}}"></script>
+    <script src="{{scripts_files.datatable}}"></script>
+    <script src="{{scripts_files.restoration}}"></script>
 </body>
 </html>

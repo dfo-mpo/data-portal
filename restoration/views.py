@@ -11,17 +11,29 @@ from django.http import JsonResponse, HttpResponseBadRequest, HttpResponse, Stre
 
 def my_view(request):
     # Paths to your static files are generated using the 'static' template tag function
-    csvfile_path = request.build_absolute_uri('/static/dataset_sample_final.csv')
+    css_path = static('/styles.css')
+    csvfile_path = static('/data/dataset_sample_final.csv')
 
     geojson_path = {
-        'ck': static('/CK_CU_Boundary_Simple.geojson'),
-        'co': static('/CO_CU_Boundary_Simple.geojson'),
+        'ck': static('/data/CK_CU_Boundary_Simple.geojson'),
+        'co': static('/data/CO_CU_Boundary_Simple.geojson'),
+    }
+
+    scripts_path = {
+        'restoration': static('restoration.js'),
+        'getdata': static('getdata.js'),
+        'utils': static('utils.js'),
+        'map': static('map.js'),
+        'chart': static('chart.js'),
+        'datatable': static('datatable.js'),
     }
 
     # Context contains paths which will be used in the HTML template to set data attributes
     context = {
+        'css_file': css_path,
         'csv_file': csvfile_path,
         'geojson_files': geojson_path,
+        'scripts_files': scripts_path,
     }
 
     # This view renders 'restoration.html' with the context containing paths to your data files
@@ -41,38 +53,3 @@ def my_view(request):
 #         }
 #     }
 #     return JsonResponse(data)
-
-def restoration_path(request):
-    restoration_path = os.path.join(settings.BASE_DIR, 'restoration', 'static', 'restoration.js')
-    with open(restoration_path, 'rb') as f:
-        return HttpResponse(f.read(), content_type="text/javascript")
-
-def getdata_path(request):
-    getdata_path = os.path.join(settings.BASE_DIR, 'restoration', 'static', 'getdata.js')
-    with open(getdata_path, 'rb') as f:
-        return HttpResponse(f.read(), content_type="text/javascript")
-
-def map_path(request):
-    map_path = os.path.join(settings.BASE_DIR, 'restoration', 'static', 'map.js')
-    with open(map_path, 'rb') as f:
-        return HttpResponse(f.read(), content_type="text/javascript")
-    
-def chart_path(request):
-    chart_path = os.path.join(settings.BASE_DIR, 'restoration', 'static', 'chart.js')
-    with open(chart_path, 'rb') as f:
-        return HttpResponse(f.read(), content_type="text/javascript")
-
-def datatable_path(request):
-    datatable_path = os.path.join(settings.BASE_DIR, 'restoration', 'static', 'datatable.js')
-    with open(datatable_path, 'rb') as f:
-        return HttpResponse(f.read(), content_type="text/javascript")
-    
-def utils_path(request):
-    utils_path = os.path.join(settings.BASE_DIR, 'restoration', 'static', 'utils.js')
-    with open(utils_path, 'rb') as f:
-        return HttpResponse(f.read(), content_type="text/javascript")
-    
-def css_path(request):
-    css_path = os.path.join(settings.BASE_DIR, 'restoration', 'static', 'styles.css')
-    with open(css_path, 'rb') as f:
-        return HttpResponse(f.read(), content_type="text/css")

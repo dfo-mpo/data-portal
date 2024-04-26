@@ -16,18 +16,10 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from restoration.views import my_view, restoration_path, getdata_path, map_path, chart_path, datatable_path, utils_path, css_path
+from restoration.views import my_view
 from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
     path('', my_view, name='my_view'),
-    # path('api/get-file-paths/', get_file_paths, name='get-file-paths'),
-    path('restoration-path/', restoration_path, name='restoration-path'),
-    path('getdata-path/', getdata_path, name='getdata-path'),
-    path('map-path/', map_path, name='map-path'),
-    path('chart-path/', chart_path, name='chart-path'),
-    path('datatable-path/', datatable_path, name='datatable-path'),
-    path('utils-path/', utils_path, name='utils-path'),
-    path('css-path/', css_path, name='css-path'),
 ]
