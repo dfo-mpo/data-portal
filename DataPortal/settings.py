@@ -127,3 +127,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static")
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOCAL_SETTINGS_FILE = os.path.join(BASE_DIR, 'DataPortal', 'local_settings.py')
+if os.path.isfile(LOCAL_SETTINGS_FILE):
+  from .local_settings import *
