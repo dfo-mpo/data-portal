@@ -9,9 +9,8 @@ const dataNameAlias = {
   'EcoType': 'Ecosystem Type',
   'Species': 'Target Species',
   'CU_Name': 'CU_Name',
-  'CU_Index': 'FULL_CU_Index',
+  'CU_Index': 'FULL_CU_IN',
   'SMU_Name': 'SMU_Name',
-  'Location': 'Mapped Location'
 }
 
 const csvFile = document.body.getAttribute('data-csv-file');
