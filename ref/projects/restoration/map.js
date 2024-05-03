@@ -9,6 +9,11 @@ const geojsonLayers = [
   //   fillColor: 'red',
   //   name: 'CU Coho'
   // }
+  {
+    data: ck_cu_data,
+    fillColor: '#3388ff',
+    name: 'CU Chinook'
+  }
 ];
 
 function createMarkers(map, locationData) {
@@ -119,7 +124,7 @@ function createLayerList(map) {
   allLayers = geojsonLayers.map(l => l.name);
   allLayers.unshift('Coordinates');
   allLayers.forEach(l => {
-    let toggleState = 'fa-eye-slash';
+    let toggleState = 'fa-eye';
     if (l === 'Coordinates') {
       toggleState = 'fa-eye';
     }
@@ -157,20 +162,11 @@ function toggleLayer(map, layer, layerName, markerGroup) {
 }
 
 function updateGeoJsonData(data, locationData) {
-  const selectedProjectName = document.getElementById('projectNameSelector').value;
-  const selectedCU = document.getElementById('cuSelector').value;
-
-  if (selectedProjectName === 'All' && selectedCU === 'All') {
-    geojsonData = data;
-  } else {
-    const cuids = [...new Set(locationData.map(item => item[dataNameAlias.CU_Index]))];
-    // console.log('cuids', cuids);
-    geojsonData = data.features.filter(item => {
-      return cuids.includes(item.properties['FULL_CU_IN']);
-    });
-  }
-
-  // console.log('geojsonData',geojsonData);
+  const cuids = [...new Set(locationData.map(item => item[dataNameAlias.CU_Index]))];
+  const geojsonData = data.filter(item => {
+    return cuids.includes(item.properties['FULL_CU_IN']);
+  });
+  
   return geojsonData;
 }
 
@@ -196,10 +192,17 @@ function drawMap(locationData) {
   const geojsonLayersList = [];
 
   geojsonLayers.forEach(geojsonLayer => {
-    fetch(geojsonLayer.filename)
-      .then(response => response.json())
-      .then(data => {
-        const geojsonData = updateGeoJsonData(data, locationData);
+    const data = geojsonLayer.data;
+  // geojsonLayers.forEach(geojsonLayer => {
+  //   fetch(geojsonLayer.filename)
+  //     .then(response => response.json())
+  //     .then(data => {
+        let geojsonData = []
+        if (selectors.every(selector => document.getElementById(selector.id).value === 'All')) {
+          geojsonData = data;
+        } else {
+          geojsonData = updateGeoJsonData(data, locationData);
+        }
 
         function mouseoverFeature(e) {
           const layer = e.target;
@@ -254,19 +257,19 @@ function drawMap(locationData) {
         const geoStyle = () => ({
           weight: 1,
           color: '#555555',
-          fillColor: getRandomColor(),
+          fillColor: geojsonLayer.fillColor,
           fillOpacity: .2
         });
 
         const geojson = L.geoJson(geojsonData, {
           style: geoStyle,
           onEachFeature: onEachFeature
-        });
+        }).addTo(map);
         geojson.bringToBack();
 
         geojsonLayersList.push(geojson);
 
         toggleLayer(map, geojson, geojsonLayer.name, markerGroup);
       })
-    })
+    // })
 }
