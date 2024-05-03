@@ -1,71 +1,91 @@
-/* Styles for Data Container */
-#dataContainer {
-  width: calc(50% - 20px);
-  float: left;
-  padding: 20px;
-  box-sizing: border-box;
+#dashboardContainer {
+  width: 100%;
+  margin: 0 auto;
 }
 
-/* Styles for Data Filter Container */
-#dataFilterContainer {
-  margin-bottom: 20px;
+#dataFilterContainer, 
+#dataTableContainer, 
+#chartContainer, 
+#mapContainer {
+  margin: 10px 0;
 }
 
+/* Selectors */
 select {
   width: 100%;
 }
 
-/* Styles for Chart Container */
-#chartContainer {
-  margin-bottom: 20px;
-}
-
-/* Styles for Data Table Container */
-#dataTableContainer {
-  margin-bottom: 20px;
-}
-
-/* Styles for Data Table */
+/* Data Table */
 #dataTable {
   width: 100%;
   border-collapse: collapse;
 }
 
-#dataTable th, #dataTable td {
-  border: 1px solid #ddd;
-  padding: 8px;
-}
-
-#dataTable th {
-  background-color: #f2f2f2;
-}
-
-#dataTable tbody tr:nth-child(even) {
-  background-color: #f2f2f2;
-}
-
-#dataTable tbody tr:hover {
-  background-color: #ddd;
-}
-
-/* Styles for Map Container */
-#mapContainer {
-  width: calc(50% - 20px);
-  float: right;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-/* Styles for Line Chart Canvas */
-#lineChart {
+/* Map */
+#mapDiv {
   width: 100%;
-  height: 300px;
-  border: 1px solid #ddd;
+  min-height: 80vh;
 }
 
-/* Styles for Map */
-#map {
+/* Chart */
+#chartDiv {
   width: 100%;
-  height: 600px;
-  border: 1px solid #ddd;
+  min-height: 300px;
+}
+
+/* ///////////// */
+/* Grid */
+
+.grid {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.grid > div {
+  width: calc(100% - 10px);
+  margin: 10px;
+  float: left;
+}
+
+/* ///////////// */
+/* Map */
+
+.info {
+  padding: 6px 8px;
+  font: 14px/24px Arial, Helvetica, sans-serif;
+  background: white;
+  background: rgba(255,255,255,0.8);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
+  border-radius: 5px;
+}
+
+.info div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 4px;
+}
+
+.info div i {
+  margin-left: 12px;
+}
+
+.info h4 {
+  margin: 0 0 5px;
+  color: #777;
+}
+
+.layer-name {
+  line-height: 1;
+  padding-right: 6px;
+}
+
+.toggle-icon {
+  cursor: pointer;
+  /* color: #555555; */
+  /* font-size: 1.2em; */
+}
+
+.leaflet-popup-content {
+  font-size: 13px;
 }

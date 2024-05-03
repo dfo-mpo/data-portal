@@ -1,116 +1,132 @@
-// const file = './data/restoration_projects_dataportal.csv';
-// const file = './data/restoration_projects_dataportal1.csv';
-// const file = './data/sample_data.csv';
+// const csvfile = './data/dataset_sample_final.csv';
 
-// async function checkFileExistence(url) {
-//   try {
-//     const response = await fetch(url, { method: 'HEAD' });
-//     return response.ok;
-//   } catch (error) {
-//     console.error('Error checking file existence:', error);
-//     return false;
-//   }
-// }
-
-async function fetchData() {
-  try {
-    // const fileExists = await checkFileExistence(file);
-    // if (!fileExists) {
-    //   throw new Error('File does not exist.');
-    // }
-    // const data = await csv2json(file);
-    const data = dataset;
-    return data;
-  } catch (error) {
-    console.error('Error fetching data:', error);
-    throw error;
-  }
+const dataNameAlias = {
+  'PrjName': 'Project Name',
+  'PrjLead': 'Project Lead Organization',
+  'PrjDesc': 'Project Description',
+  'Lat': 'Latitude in Decimal Degrees',
+  'Lng': 'Longitude in Decimal Degrees',
+  'CU_Name': 'MAX_CU_Nam',
+  'SMU_Name': 'SMU_Name',
+  'Year': 'Reporting Fiscal Year',
+  'CU_Index': 'FULL_CU_IN',
+  'Species': 'FullSpecies',
+  'WatershedName': 'Watershed Name',
+  'EcosystemType': 'Ecosystem Type',
 }
 
-function populateSelectors(data) {
-  const uniqueProjectNames = [...new Set(data.map(item => item['Project Name']))].sort();
-  const uniqueSpecies = [...new Set(data.map(item => item['FullSpecies']))].sort();
-  const uniqueCUNames = [...new Set(data.map(item => item['MAX_CU_Nam']))].sort();
-  const uniqueSMUNames = [...new Set(data.map(item => item['SMU_Name']))].sort();
+const selectors = [
+  { id: 'projectNameSelector', key: dataNameAlias.PrjName },
+  { id: 'speciesSelector', key: dataNameAlias.Species },
+  { id: 'cuSelector', key: dataNameAlias.CU_Name },
+  { id: 'smuSelector', key: dataNameAlias.SMU_Name }
+];
 
-  const projectNameSelector = document.getElementById('projectNameSelector');
-  const speciesSelector = document.getElementById('speciesSelector');
-  const cuSelector = document.getElementById('cuSelector');
-  const smuSelector = document.getElementById('smuSelector');
-
-  populateOptions(projectNameSelector, uniqueProjectNames);
-  populateOptions(speciesSelector, uniqueSpecies);
-  populateOptions(cuSelector, uniqueCUNames);
-  populateOptions(smuSelector, uniqueSMUNames);
+function populateSelectors(data, urlParams = '') {
+  selectors.forEach(item => {
+    const selector = document.getElementById(item.id);
+    const selectedValue = urlParams[item.key] ? urlParams[item.key] : selector.value ;
+    const uniqueOptions = getUniqueOptions(data, item.key);
+    populateOptions(selector, uniqueOptions, selectedValue);
+  });
 }
 
-function populateOptions(selector, options) {
+function getUniqueOptions(data, key) {
+  return [...new Set(data.map(item => item[key]))].sort();
+}
+
+function populateOptions(selector, options, selectedValue = '') {
   selector.innerHTML = '<option value="All">All</option>';
-  for (let option of options) {
+  options.forEach(option => {
     const optionElement = document.createElement('option');
     optionElement.value = option;
     optionElement.textContent = option;
+    if (option === selectedValue) {
+      optionElement.selected = true;
+    }
     selector.appendChild(optionElement);
-  }
+  });
 }
 
-function updateData() {
-  const projectName = document.getElementById('projectNameSelector').value;
-  const species = document.getElementById('speciesSelector').value;
-  const cuNames = document.getElementById('cuSelector').value;
-  const smuNames = document.getElementById('smuSelector').value;
+function updateData(data, urlParams = '', updatedUrlSearchParams = '') {
+  const filterValues = {};
 
-  fetchData()
-    .then(data => {
-      const filteredData = data.filter(item => {
-        return (projectName === 'All' || item['Project Name'] === projectName) &&
-               (species === 'All' || item['FullSpecies'] === species) &&
-               (cuNames === 'All' || item['MAX_CU_Nam'] === cuNames) &&
-               (smuNames === 'All' || item['SMU_Name'] === smuNames);
-      });
+  selectors.forEach(selector => {
+    const selectedValue = urlParams[selector.key] ? urlParams[selector.key] : document.getElementById(selector.id).value;
 
-      const dataTableBody = document.getElementById('dataBody');
-      dataTableBody.innerHTML = '';
-      
-      // Update data table 
-      filteredData.forEach(item => {
-        const row = document.createElement('tr');
-        row.innerHTML = `
-          <td>${item['Project Name']}</td>
-          <td>${item['Project Lead Organization']}</td>
-          <td>${item['Project Description']}</td>
-        `;
-        dataTableBody.appendChild(row);
-      });
+    filterValues[selector.key] = selectedValue;
+    if (filterValues[selector.key] !== 'All') {
+      updatedUrlSearchParams.append(selector.key, filterValues[selector.key]);
+    }
+  });
 
-      // populateSelectors(filteredData);
-      // console.log(filteredData);
-
-      drawLineChart(filteredData);
-      drawMap(filteredData);
-
-      // console.log(filteredData);
-    })
-    .catch(error => {
-      console.error('Error updating data table:', error);
+  const filteredData = data.filter(item => {
+    return selectors.every(selector => {
+      const value = filterValues[selector.key];
+      return value === '' || value === 'All' || item[selector.key] === value;
     });
+  });
+
+  return filteredData;
 }
 
-function registerEventListeners() {
-  document.getElementById('projectNameSelector').addEventListener('change', updateData);
-  document.getElementById('speciesSelector').addEventListener('change', updateData);
-  document.getElementById('cuSelector').addEventListener('change', updateData);
-  document.getElementById('smuSelector').addEventListener('change', updateData);
+function updateElements(data, urlParams = '') {
+  const updatedUrlSearchParams = new URLSearchParams();
+  const filteredData = updateData(data, urlParams, updatedUrlSearchParams);
+
+  let url = `${window.location.origin}${window.location.pathname}`;
+  
+  if (filteredData.length !== 0) {
+    // update url params
+    const nonEmptyParams = Array.from(updatedUrlSearchParams).filter(([key, value]) => value !== '');
+    const queryString = new URLSearchParams(nonEmptyParams).toString();  
+
+    url += queryString ? '?' + queryString : '';
+
+    populateSelectors(filteredData, urlParams);
+    createDataTable(filteredData);
+    drawLineChart(filteredData);
+    drawMap(filteredData);
+  } else {
+    populateSelectors(data);
+    createDataTable(data);
+    drawLineChart(data);
+    drawMap(data);
+  }
+  window.history.replaceState({}, '', url);
+}
+
+function registerEventListeners(data) {
+  // add event listeners for selectors
+  selectors.forEach(selector => {
+    document.getElementById(selector.id).addEventListener('change', () => {
+      updateElements(data)
+    });
+  })
+  
+  // Reset button
+  document.getElementById('resetButton').addEventListener('click', () => {
+    selectors.forEach(selector => {
+      document.getElementById(selector.id).value = 'All';
+    })
+    updateElements(data);
+  });
 }
 
 function initialize() {
   fetchData()
     .then(data => {
-      populateSelectors(data);
-      // drawLineChart(data)
-      // drawMap(data);
-      updateData();
-      registerEventListeners();
+      const urlParams = readURLParams();
+      if (Object.keys(urlParams).length > 0) {
+        updateElements(data, urlParams);
+      } else {
+        populateSelectors(data);
+        createDataTable(data);
+        drawLineChart(data);
+        drawMap(data);
+      }
+      
+      registerEventListeners(data);
     })
     .catch(error => {
       console.error('Error initializing application:', error);
