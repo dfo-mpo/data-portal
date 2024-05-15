@@ -273,6 +273,7 @@ function drawMap(locationData) {
             layer.setStyle({
               color: '#3388ff',
               fillColor: '#3388ff',
+              fillOpacity: .5
             });
 
             const popupContent = `
