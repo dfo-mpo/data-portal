@@ -51,9 +51,8 @@ select {
 /* Map */
 
 .info {
-  padding: 6px 8px;
-  font: 14px/24px Arial, Helvetica, sans-serif;
-  background: white;
+  padding: 12px;
+  font-size: 12px;
   background: rgba(255,255,255,0.8);
   box-shadow: 0 0 15px rgba(0,0,0,0.2);
   border-radius: 5px;
@@ -63,29 +62,49 @@ select {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 4px;
+  padding: 6px 0;
+  border-bottom: 1px solid #ddd;
 }
 
-.info div i {
-  margin-left: 12px;
+.info div:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
 }
 
 .info h4 {
-  margin: 0 0 5px;
-  color: #777;
+  margin: 0;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #ddd;
 }
 
-.layer-name {
+.info span {
   line-height: 1;
-  padding-right: 6px;
 }
 
-.toggle-icon {
+.info i {
   cursor: pointer;
-  /* color: #555555; */
-  /* font-size: 1.2em; */
+  margin-left: 24px;
+  width: 18px;
+  font-size: 14px;
+}
+
+.info i.disabled{
+  color: #ddd;
 }
 
 .leaflet-popup-content {
   font-size: 13px;
+}
+
+/* Popup */
+.popup-content {
+  max-width: 300px;
+}
+
+.popup-content h3 {
+  margin: 0 0 10px 0;
+}
+
+.popup-info p {
+  margin: 4px 0;
 }

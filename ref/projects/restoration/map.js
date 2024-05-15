@@ -1,76 +1,114 @@
 const geojsonLayers = [
-  // {
-  //   filename: './data/CK_CU_Boundary_Simple.geojson',
-  //   fillColor: '#3388ff',
-  //   name: 'CU Chinook'
-  // },
-  // {
-  //   filename: './data/CO_CU_Boundary_Simple.geojson',
-  //   fillColor: 'red',
-  //   name: 'CU Coho'
-  // }
   {
     data: ck_cu_data,
-    fillColor: '#3388ff',
-    name: 'CU Chinook'
+    fillColor: '#bd175d',
+    name: 'Chinook CUs'
   }
 ];
 
 function createMarkers(map, locationData) {
+  let popupByClick = false;
+  let mouseOverTimeout;
   const markerGroup = L.layerGroup();
 
-  locationData.forEach(location => {
+  const markerStyles = {
+    base: {
+      radius: 8,
+      weight: 1,
+      color: 'white',
+      opacity: .8,
+      fillColor: 'rgba(255, 165, 0, 1)',
+      fillOpacity: .7
+    },
+    selected: {
+      color: '#3388ff',
+      fillColor: '#3388ff',
+    },
+    unselected: {
+      opacity: .025,
+      fillColor: 'rgba(255, 165, 0, .05',
+    },
+  };
+
+  const createMarker = (location, markerStyles) => {
     const lat = location[dataNameAlias.Lat];
     const lng = location[dataNameAlias.Lng];
 
     // skip to draw markers for projects without lat & lng
     if (!isNaN(lat) && !isNaN(lng)) {
-      const marker = L.circleMarker([lat, lng], {
-        radius: 7,
-        weight: 2,
-        color: 'white',
-        opacity: .7,
-        fillColor: 'orange',
-        fillOpacity: 1
-      }).addTo(markerGroup);
 
-      marker.on('click', () => {
-        const clickedItemID = location['id'];
-        const filteredData = locationData.filter(item => item['id'] == clickedItemID);
-        createDataTable(filteredData);
-
-        map.flyTo(marker.getLatLng());
-      })
+      const marker = L.circleMarker([lat, lng], markerStyles.base).addTo(markerGroup);
 
       const popupContent = `
-        <div>
-          Project Name: ${location[dataNameAlias.PrjName]}
-          <br>
-          Lat ${location[dataNameAlias.Lat]}, Long ${location[dataNameAlias.Lng]}
-          <br>
-          CU: ${location[dataNameAlias.CU_Name]}, (${location[dataNameAlias.CU_Index]})
+        <div class="popup-content">
+          <h3>${location[dataNameAlias.PrjName]}</h3>
+          <div class="popup-info">
+            <p><strong>Latitude:</strong> ${location[dataNameAlias.Lat]}</p>
+            <p><strong>Longitude:</strong> ${location[dataNameAlias.Lng]}</p>
+            <p><strong>CU Name:</strong> ${location[dataNameAlias.CU_Name]}</p>
+            <p><strong>CU Index:</strong> ${location[dataNameAlias.CU_Index]}</p>
+          </div>
         </div>
       `;
 
-      marker.on('mouseover', () => {
-        setTimeout(() => {
-          marker.bindPopup(popupContent, { closeButton: false })
-                .openPopup();
-        }, 800);
-      });
-      
-      marker.on('mouseout', () => {
-        setTimeout(() => {
-          marker.closePopup();
-        }, 1200);
-      });
+      marker.on({
+        click: () => {
+          popupByClick = true;
+
+          const clickedItemID = location['id'];
+          const filteredData = locationData.filter(item => item['id'] == clickedItemID);
+          createDataTable(filteredData);
+
+          markerGroup.eachLayer(marker => {
+            marker.setStyle(markerStyles.unselected);
+          })
+          marker.setStyle({
+            ...markerStyles.base,
+            ...markerStyles.selected
+          });
+          map.flyTo(marker.getLatLng(), map.getZoom(), { animate: true, duration: .5 });
+          makePopup(marker, popupContent, [0, -10]);
+        },
+
+        popupclose: () => {
+          popupByClick = false;
+          // reset data
+          createDataTable(locationData);
+          markerGroup.eachLayer(marker => {
+            marker.setStyle(markerStyles.base);
+          })
+        },
+
+        mouseover: () => {
+          clearTimeout(mouseOverTimeout);
+          mouseOverTimeout = setTimeout(() => {
+            if (!popupByClick) {
+              makePopup(marker, popupContent, [0, -10]);
+            }
+          }, 300);
+        },
+        
+        mouseout: () => {
+          clearTimeout(mouseOverTimeout);
+          if (!popupByClick) {
+            marker.closePopup();
+          }
+        },
+      })
     }
+  }
+
+  locationData.forEach(location => {
+    createMarker(location, markerStyles);
   });
 
-  // markerGroup.addTo(map);
-  markerGroup.addTo(map, {animate: false, duration: 5, noMoveStart: true})
+  markerGroup.addTo(map, {animate: false, duration: 5, noMoveStart: true});
   return markerGroup;
 }
+
+const makePopup = (layer, content, offsetParam = [0, 0], latLng = '') => {
+  layer.bindPopup(content, { closeButton: false, offset: offsetParam }).openPopup(latLng);
+};
 
 function getMarkerGroupCenter(markerGroup) {
   const markers = markerGroup.getLayers();
@@ -107,66 +145,66 @@ function setMarkerGroupView(markerGroup, map) {
       bounds.extend(marker.getLatLng());
   });
 
-  map.flyToBounds(bounds, {animate: false});
+  map.flyToBounds(bounds, { animate: false });
 }
 
-function createLayerList(map) {
+function createLayerLegend(map) {
   const info = L.control();
 
   info.onAdd = function (map) {
     this._div = L.DomUtil.create('div', 'info');
-    this._div.setAttribute('id', 'layer-list');
+    this.update();
     return this._div;
   };
 
+  info.update = function() {
+    this._div.innerHTML = '<h4>Layers</h4>';
+  }
+
   info.addTo(map);
 
-  allLayers = geojsonLayers.map(l => l.name);
-  allLayers.unshift('Coordinates');
-  allLayers.forEach(l => {
-    let toggleState = 'fa-eye';
-    if (l === 'Coordinates') {
-      toggleState = 'fa-eye';
-    }
-    const div = document.createElement('div');
-    div.appendChild(
-      createElement('span', {'class': 'layer-name'}, l)
-    );
-    div.appendChild(
-      createElement('i', {'id': `toggle-icon-${l}`, 'class': `toggle-icon fa-regular ${toggleState}`})
-    );
-
-    info._div.appendChild(div);
-  })
+  return info;
 }
 
-function toggleLayer(map, layer, layerName, markerGroup) {
+function addLayerToLegend(layerLegend, layerName, visibility = 'fa-eye-slash disabled') {
+  const div = document.createElement('div');
+  div.appendChild(
+    createElement('span', {}, layerName)
+  );
+  div.appendChild(
+    createElement('i', { 'id': `toggle-icon-${layerName}`, 'class': `toggle-icon fa-regular ${visibility}` })
+  );
+
+  layerLegend._div.appendChild(div);
+}
+
+function toggleLayerVisibility(map, layerName = '', geojson = '', markerGroup = '') {
   const toggleIcon = document.getElementById(`toggle-icon-${layerName}`);
 
   toggleIcon.addEventListener('click', () => {
     if (toggleIcon.classList.contains('fa-eye')) {
-      layer.removeFrom(map);
+      geojson.removeFrom(map);
       toggleIcon.classList.remove('fa-eye');
       toggleIcon.classList.add('fa-eye-slash');
     } else {
-      layer.addTo(map);
+      geojson.addTo(map);
       toggleIcon.classList.remove('fa-eye-slash');
       toggleIcon.classList.add('fa-eye');
     }
 
+    // After toggle map, move markers to front
     if (!(layerName === 'Coordinates') && markerGroup) {
       markerGroup.removeFrom(map);
       markerGroup.addTo(map);
     }
-  });  
+    
+  });
 }
 
-function updateGeoJsonData(data, locationData) {
-  const cuids = [...new Set(locationData.map(item => item[dataNameAlias.CU_Index]))];
+function updateGeoJsonData(data, cuids) {
   const geojsonData = data.filter(item => {
     return cuids.includes(item.properties['FULL_CU_IN']);
-  });
-  
+  });  
   return geojsonData;
 }
 
@@ -180,96 +218,107 @@ function drawMap(locationData) {
     attribution: '&copy; OpenStreetMap contributors'
   }).addTo(map);
 
-  const markerGroup = createMarkers(map, locationData);
-  // center = getMarkerGroupCenter(markerGroup);
-  // if (center) {
-  //   map.setView(center, map.getZoom());
-  // }
-  setMarkerGroupView(markerGroup, map);
-  createLayerList(map);
-  toggleLayer(map, markerGroup, 'Coordinates');
-
   const geojsonLayersList = [];
+  const cuids = [...new Set(locationData.map(item => item[dataNameAlias.CU_Index]))];
+
+  const markerGroup = createMarkers(map, locationData);
+  setMarkerGroupView(markerGroup, map);
+
+  const layerLegend = createLayerLegend(map);
+  addLayerToLegend(layerLegend, 'Coordinates', 'fa-eye');
+  toggleLayerVisibility(map, 'Coordinates', markerGroup);
 
   geojsonLayers.forEach(geojsonLayer => {
+    addLayerToLegend(layerLegend, geojsonLayer.name);
     const data = geojsonLayer.data;
-  // geojsonLayers.forEach(geojsonLayer => {
-  //   fetch(geojsonLayer.filename)
-  //     .then(response => response.json())
-  //     .then(data => {
-        let geojsonData = []
+    
+    // fetch(geojsonLayer.filename)
+    //   .then(response => {
+    //     if (!response.ok) {
+    //       throw new Error('Failed to fetch GeoJSON data');
+    //     }
+    //     return response.json();
+    //   })
+    //   .then(data => {
+        let geojsonData = [];
+
         if (selectors.every(selector => document.getElementById(selector.id).value === 'All')) {
           geojsonData = data;
         } else {
-          geojsonData = updateGeoJsonData(data, locationData);
+          geojsonData = updateGeoJsonData(data, cuids);
         }
 
-        function mouseoverFeature(e) {
-          const layer = e.target;
-          layer.setStyle({
-            weight: 2,
-            color: 'yellow',
+        if (geojsonData.length !== 0) {
+          function mouseoverFeature(e) {
+            const layer = e.target;
+            layer.setStyle({
+              weight: 2,
+              color: 'yellow',
+            });
+          }
+
+          function mouseoutFeature(e) {
+            const layer = e.target;
+            geojson.resetStyle(layer);
+
+            setTimeout(() => {
+              layer.closePopup();
+            }, 800);
+          }
+
+          function clickFeature(e) {
+            const layer = e.target;
+            const latlng = L.latLng(e.latlng.lat + .1, e.latlng.lng);
+
+            layer.setStyle({
+              color: '#3388ff',
+              fillColor: '#3388ff',
+            });
+
+            const popupContent = `
+              <div class="popup-content">
+                <h3><strong>CU:</strong> ${layer.feature.properties['CU_Name']}</h3>
+                <div class="popup-info">
+                  <p><strong>Species:</strong> ${layer.feature.properties['Species_Nm']}</p>
+                  <p><strong>CU Type:</strong> ${layer.feature.properties['CU_Type']}</p>
+                  <p><strong>CU Index:</strong> ${layer.feature.properties['FULL_CU_IN']}</p>
+                </div>
+              </div>
+            `;
+            
+            makePopup(layer, popupContent, [0, 0], latlng);
+          }
+
+          function onEachFeature(feature, layer) {
+            layer.on({
+              mouseover: mouseoverFeature,
+              mouseout: mouseoutFeature,
+              click: clickFeature
+            });
+          }
+
+          const geoStyle = () => ({
+            weight: 1,
+            color: '#555555',
+            fillColor: geojsonLayer.fillColor,
+            fillOpacity: .2
           });
-        }
 
-        function mouseoutFeature(e) {
-          const layer = e.target;
-          geojson.resetStyle(layer);
-
-          setTimeout(() => {
-            layer.closePopup();
-          }, 800);
-        }
-
-        function clickFeature(e) {
-          const layer = e.target;
-          const latlng = L.latLng(e.latlng.lat + .1, e.latlng.lng);
-
-          layer.setStyle({
-            color: '#3388ff',
-            opacity: 1,
-            fillColor: '#3388ff',
-            fillOpacity: .7
+          const geojson = L.geoJson(geojsonData, {
+            style: geoStyle,
+            onEachFeature: onEachFeature
           });
+          
+          geojsonLayersList.push(geojson);
 
-          const popupContent = `
-            <div>
-              CU Name: ${layer.feature.properties['CU_Name']}
-              <br>
-              Type: ${layer.feature.properties['CU_Type']}
-              <br>
-              Species: ${layer.feature.properties['Species_Nm']}
-            </div>
-          `;
-
-          layer.bindPopup(popupContent, { closeButton: false })
-                .openPopup(latlng);
+          toggleLayerVisibility(map, geojsonLayer.name, geojson, markerGroup);
+          const enableVisibility = document.getElementById(`toggle-icon-${geojsonLayer.name}`);
+          enableVisibility.classList.remove('disabled');
         }
-
-        function onEachFeature(feature, layer) {
-          layer.on({
-            mouseover: mouseoverFeature,
-            mouseout: mouseoutFeature,
-            click: clickFeature
-          });
-        }
-
-        const geoStyle = () => ({
-          weight: 1,
-          color: '#555555',
-          fillColor: geojsonLayer.fillColor,
-          fillOpacity: .2
-        });
-
-        const geojson = L.geoJson(geojsonData, {
-          style: geoStyle,
-          onEachFeature: onEachFeature
-        }).addTo(map);
-        geojson.bringToBack();
-
-        geojsonLayersList.push(geojson);
-
-        toggleLayer(map, geojson, geojsonLayer.name, markerGroup);
-      })
-    // })
+        
+      // })
+      // .catch(error => {
+      //   console.error('Error fetching GeoJSON data:', error);
+      // })
+    })
 }

@@ -48,15 +48,16 @@ function populateOptions(selector, options, selectedValue = '') {
   });
 }
 
-function updateData(data, urlParams = '', updatedUrlSearchParams = '') {
+function updateData(data, urlParams = '') {
+  const updatedUrlSearchParams = new URLSearchParams();
   const filterValues = {};
 
   selectors.forEach(selector => {
     const selectedValue = urlParams[selector.key] ? urlParams[selector.key] : document.getElementById(selector.id).value;
 
     filterValues[selector.key] = selectedValue;
-    if (filterValues[selector.key] !== 'All') {
-      updatedUrlSearchParams.append(selector.key, filterValues[selector.key]);
+    if (selectedValue !== 'All') {
+      updatedUrlSearchParams.append(selector.key, selectedValue);
     }
   });
 
@@ -67,32 +68,24 @@ function updateData(data, urlParams = '', updatedUrlSearchParams = '') {
     });
   });
 
-  return filteredData;
+  return { filteredData, updatedUrlSearchParams };
 }
 
 function updateElements(data, urlParams = '') {
-  const updatedUrlSearchParams = new URLSearchParams();
-  const filteredData = updateData(data, urlParams, updatedUrlSearchParams);
-
   let url = `${window.location.origin}${window.location.pathname}`;
+  const { filteredData, updatedUrlSearchParams } = updateData(data, urlParams);
   
   if (filteredData.length !== 0) {
     // update url params
-    const nonEmptyParams = Array.from(updatedUrlSearchParams).filter(([key, value]) => value !== '');
-    const queryString = new URLSearchParams(nonEmptyParams).toString();  
-
+    const queryString = updatedUrlSearchParams.toString();
     url += queryString ? '?' + queryString : '';
-
-    populateSelectors(filteredData, urlParams);
-    createDataTable(filteredData);
-    drawLineChart(filteredData);
-    drawMap(filteredData);
-  } else {
-    populateSelectors(data);
-    createDataTable(data);
-    drawLineChart(data);
-    drawMap(data);
   }
+
+  populateSelectors(filteredData.length !== 0 ? filteredData : data, urlParams);
+  createDataTable(filteredData.length !== 0 ? filteredData : data);
+  drawLineChart(filteredData.length !== 0 ? filteredData : data);
+  drawMap(filteredData.length !== 0 ? filteredData : data);
+  
   window.history.replaceState({}, '', url);
 }
 
@@ -118,8 +111,11 @@ function initialize() {
     .then(data => {
       const urlParams = readURLParams();
       if (Object.keys(urlParams).length > 0) {
+        // console.log('initialize with url params');
         updateElements(data, urlParams);
       } else {
+        // console.log('initialize with all data');
+        // console.log('data length:', data.length);
         populateSelectors(data);
         createDataTable(data);
         drawLineChart(data);

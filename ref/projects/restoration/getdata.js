@@ -21,7 +21,7 @@ function csvToJSON(csvString) {
   const lines = csvString.split('\n');
   const headers = lines[0].split(',').map(header => header.trim()); // `.replace(/\s+/g, '')` Add this to remove spaces
   const jsonData = [];
-  const strToFloat = [dataNameAlias.Lat, dataNameAlias.Lon];
+  const strToFloat = [dataNameAlias.Lat, dataNameAlias.Lng];
 
   headers[0] = (headers[0] === '') ? 'id' : headers[0];
 
