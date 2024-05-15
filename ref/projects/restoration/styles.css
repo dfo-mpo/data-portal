@@ -90,6 +90,7 @@ select {
 
 .info i.disabled{
   color: #ddd;
+  cursor: default;
 }
 
 .leaflet-popup-content {
