@@ -81,6 +81,10 @@ These files are integral to the project and are referenced as the major values f
 
 The complete source code for this project is available on GitHub, repo name is `data-portal-habitat-restoration`: [dfo-mpo/data-portal-habitat-restoration](https://github.com/dfo-mpo/data-portal-habitat-restoration)
 
+### `ref/` Folder
+
+- The `ref/` folder in the repository contains files for the GitHub-hosted static website used only for reference. It is not required to run the main application and serves purely for demonstration purposes.
+
 ### Initial Setup
 
 1. Ensure that all necessary files, including HTML, CSS, data files, and JavaScript files, are properly linked and accessible within the project environment.
