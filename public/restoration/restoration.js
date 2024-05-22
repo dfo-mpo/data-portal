@@ -7,6 +7,7 @@ function createSelectors(containerId, selectors) {
     label.textContent = selector.name;
     const select = document.createElement('select');
     select.id = selector.id;
+    select.classList.add('main-selector');
     div.appendChild(label);
     div.appendChild(select);
     container.appendChild(div);

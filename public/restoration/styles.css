@@ -15,7 +15,7 @@
 }
 
 /* Selectors */
-select {
+#selectorContainer select {
   width: 100%;
 }
 
