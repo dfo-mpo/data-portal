@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restoration</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" href="styles.css">
+
+</head>
+<body>
+    <div id="dashboardContainer">
+        <div id="selectorContainer" class="grid"></div>
+        <div id="mapContainer"></div>
+        <div><button id="resetButton"><i class="fa-solid fa-rotate-right"></i> Reset Map</button></div>
+        <div id="dataTableContainer"></div>
+        <div id="chartContainer"></div>
+    </div>
+    
+    <!-- Amcharts -->
+    <script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+    <script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+
+    <!-- Leaflet -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- DataTable -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
+
+    <script src="global.js"></script>
+    <script src="utils.js"></script>
+    <script src="getdata.js"></script>
+    <script src="chart.js"></script>
+    <script src="map.js"></script>
+    <script src="datatable.js"></script>
+    <script src="restoration.js"></script>
+</body>
+</html>
