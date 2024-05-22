@@ -90,6 +90,7 @@ The complete source code for this project is available on GitHub, repo name is `
 1. Ensure that all necessary files, including HTML, CSS, data files, and JavaScript files, are properly linked and accessible within the project environment.
 2. To install node modules, run `npm install`.
 3. To launch the project, run the command `node app.js` in the terminal.
+4. To preview in Azure Web App, [Restoration](https://habitatrestoration.azurewebsites.net/restoration/) 
 
 ### Reference Implementation
 
