@@ -122,7 +122,32 @@ async function loadGeoJSONFiles() {
   });
 }
 
+function showLoadingIndicator(show = false) {
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  const elementsToToggle = [
+    // 'selectorContainer',
+    // 'mapContainer',
+    'resetButton',
+    // 'dataTableContainer',
+    // 'chartContainer'
+  ];
+
+  if (show) {
+    loadingIndicator.classList.remove('hidden');
+    elementsToToggle.forEach(id => {
+      document.getElementById(id).classList.add('hidden');
+    });
+  } else {
+    loadingIndicator.classList.add('hidden');
+    elementsToToggle.forEach(id => {
+      document.getElementById(id).classList.remove('hidden');
+    });
+  }
+}
+
 async function initialize() {
+  showLoadingIndicator(true);
+
   try {
     const data = await fetchData(csvfile);
     await loadGeoJSONFiles();
@@ -140,8 +165,10 @@ async function initialize() {
     }
     
     registerEventListeners(data);
+    showLoadingIndicator(false);
   } catch (error) {
     console.error('Error initializing application:', error);
+    document.getElementById('loadingIndicator').innerText = 'Failed to load data. Please try again later.';
   }
 }
 
