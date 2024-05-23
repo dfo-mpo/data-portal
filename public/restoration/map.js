@@ -229,7 +229,7 @@ function updateGeoJsonData(data, mapping, key) {
   return geojsonData;
 }
 
-function createGeoLayers(map, locationData, markerGroup, geojsonLayers, control, mappingType) {
+function createGeoLayers(map, locationData, markerGroup, geojsonLayers, control, mappingType, loadedGeoJsonData) {
   let mapping;
   let mappingKey;
 
@@ -246,106 +246,93 @@ function createGeoLayers(map, locationData, markerGroup, geojsonLayers, control,
 
   geojsonLayers.forEach(geojsonLayer => {
     addLayerToControl(control, geojsonLayer.name);
-    
-    fetch(geojsonLayer.filename)
-      .then(response => {
-        if (!response.ok) {
-          throw new Error('Failed to fetch GeoJSON data');
+
+    let loadedLayerData = loadedGeoJsonData[geojsonLayer.name];
+
+    if (selectors.every(selector => document.getElementById(selector.id).value === 'All')) {
+      geojsonData = loadedLayerData.features;
+    } else {
+      geojsonData = updateGeoJsonData(loadedLayerData, mapping, mappingKey);
+    }
+
+    if (geojsonData.length !== 0) {
+      function mouseoverFeature(e) {
+        const layer = e.target;
+        layer.setStyle({
+          weight: 2,
+          color: 'yellow',
+        });
+      }
+
+      function mouseoutFeature(e) {
+        const layer = e.target;
+        geojson.resetStyle(layer);
+
+        setTimeout(() => {
+          layer.closePopup();
+        }, 800);
+      }
+
+      function clickFeature(e) {
+        const layer = e.target;
+        const latlng = L.latLng(e.latlng.lat + .1, e.latlng.lng);
+
+        layer.setStyle({
+          color: '#3388ff',
+          fillColor: '#3388ff',
+          fillOpacity: .5
+        });
+
+        const properties = layer.feature.properties;
+        const keysToOmit = ['OBJECTID_1', 'ObjectID', 'Shape_Area', 'Shape_Length'];
+        let title = '';
+        if (properties['CU_Name']) {
+          title = `<h3><strong>CU:</strong> ${properties['CU_Name']}</h3>`;
+          keysToOmit.push('CU_Name');
+        } else if (properties['SMU_NAME']) {
+          title = `<h3><strong>SMU:</strong> ${properties['SMU_NAME']}</h3>`;
+          keysToOmit.push('SMU_NAME');
         }
-        return response.json();
-      })
-      .then(data => {
-        let geojsonData = [];
 
-        if (selectors.every(selector => document.getElementById(selector.id).value === 'All')) {
-          geojsonData = data.features;
-        } else {
-          geojsonData = updateGeoJsonData(data, mapping, mappingKey);
+        let popupContent = '<div class="popup-content">';
+        popupContent += title;
+        popupContent += '<div class="popup-info">';
+        for (const key in properties) {
+          if (Object.hasOwnProperty.call(properties, key) && !keysToOmit.includes(key)) {
+            popupContent += `<p><strong>${key}:</strong> ${properties[key]}</p>`;
+          }
         }
 
-        if (geojsonData.length !== 0) {
-          function mouseoverFeature(e) {
-            const layer = e.target;
-            layer.setStyle({
-              weight: 2,
-              color: 'yellow',
-            });
-          }
-
-          function mouseoutFeature(e) {
-            const layer = e.target;
-            geojson.resetStyle(layer);
-
-            setTimeout(() => {
-              layer.closePopup();
-            }, 800);
-          }
-
-          function clickFeature(e) {
-            const layer = e.target;
-            const latlng = L.latLng(e.latlng.lat + .1, e.latlng.lng);
-
-            layer.setStyle({
-              color: '#3388ff',
-              fillColor: '#3388ff',
-              fillOpacity: .5
-            });
-
-            const properties = layer.feature.properties;
-            const keysToOmit = ['OBJECTID_1', 'ObjectID', 'Shape_Area', 'Shape_Length'];
-            let title = '';
-            if (properties['CU_Name']) {
-              title = `<h3><strong>CU:</strong> ${properties['CU_Name']}</h3>`;
-              keysToOmit.push('CU_Name');
-            } else if (properties['SMU_NAME']) {
-              title = `<h3><strong>SMU:</strong> ${properties['SMU_NAME']}</h3>`;
-              keysToOmit.push('SMU_NAME');
-            }
-
-            let popupContent = '<div class="popup-content">';
-            popupContent += title;
-            popupContent += '<div class="popup-info">';
-            for (const key in properties) {
-              if (Object.hasOwnProperty.call(properties, key) && !keysToOmit.includes(key)) {
-                popupContent += `<p><strong>${key}:</strong> ${properties[key]}</p>`;
-              }
-            }
-
-            popupContent += '</div></div>';
-            
-            makePopup(layer, popupContent, [0, 0], latlng);
-          }
-
-          function onEachFeature(feature, layer) {
-            layer.on({
-              mouseover: mouseoverFeature,
-              mouseout: mouseoutFeature,
-              click: clickFeature
-            });
-          }
-
-          const geoStyle = () => ({
-            weight: 1,
-            color: '#555555',
-            fillColor: geojsonLayer.fillColor,
-            fillOpacity: .2
-          });
-
-          const geojson = L.geoJson(geojsonData, {
-            style: geoStyle,
-            onEachFeature: onEachFeature
-          });
-
-          addLayerVisibility(map, markerGroup, geojsonLayer.name, geojson);
-          const enableVisibility = document.getElementById(`toggle-icon-${geojsonLayer.name}`);
-          enableVisibility.classList.remove('disabled');
-        }
+        popupContent += '</div></div>';
         
-      })
-      .catch(error => {
-        console.error('Error fetching GeoJSON data:', error);
-      })
-    })
+        makePopup(layer, popupContent, [0, 0], latlng);
+      }
+
+      function onEachFeature(feature, layer) {
+        layer.on({
+          mouseover: mouseoverFeature,
+          mouseout: mouseoutFeature,
+          click: clickFeature
+        });
+      }
+
+      const geoStyle = () => ({
+        weight: 1,
+        color: '#555555',
+        fillColor: geojsonLayer.fillColor,
+        fillOpacity: .2
+      });
+
+      const geojson = L.geoJson(geojsonData, {
+        style: geoStyle,
+        onEachFeature: onEachFeature
+      });
+
+      addLayerVisibility(map, markerGroup, geojsonLayer.name, geojson);
+      const enableVisibility = document.getElementById(`toggle-icon-${geojsonLayer.name}`);
+      enableVisibility.classList.remove('disabled');
+    }
+  })
 }
 
 function createMap(locationData) {
@@ -378,9 +365,9 @@ function createMap(locationData) {
   addLayerToControl(layerControl, 'Coordinates', 'fa-eye');
   addLayerVisibility(map, markerGroup, 'Coordinates');
 
-  createGeoLayers(map, locationData, markerGroup, geojsonLayers, layerControl, 'CU');
+  createGeoLayers(map, locationData, markerGroup, geojsonLayers, layerControl, 'CU', loadedCULayerData);
   
   addLayerDivider(layerControl, 'SMU Layers');
-  createGeoLayers(map, locationData, markerGroup, geojsonSMULayers, layerControl, 'SMU');
+  createGeoLayers(map, locationData, markerGroup, geojsonSMULayers, layerControl, 'SMU', loadedSMULayerData);
 
 }

@@ -101,24 +101,48 @@ function registerEventListeners(data) {
   }
 }
 
-function initialize() {
-  fetchData(csvfile)
-    .then(data => {
-      const urlParams = readURLParams();
-      createSelectors('selectorContainer', selectors);
-      if (Object.keys(urlParams).length > 0) {
-        updateElements(data, urlParams);
-      } else {
-        populateSelectors(data);
-        createMap(data);
-        createDataTable(data);
-        createChart(data);
-      }
-      registerEventListeners(data);
-    })
-    .catch(error => {
-      console.error('Error initializing application:', error);
-    });
+
+
+let loadedCULayerData = {};
+let loadedSMULayerData = {};
+
+async function loadGeoJSONFiles() {
+  const geojsonPromises = geojsonLayers.map(layer => fetch(layer.filename).then(res => res.json()));
+  const geojsonSMUPromises = geojsonSMULayers.map(layer => fetch(layer.filename).then(res => res.json()));
+
+  const geojsonResults = await Promise.all(geojsonPromises);
+  const geojsonSMUResults = await Promise.all(geojsonSMUPromises);
+
+  geojsonLayers.forEach((layer, index) => {
+    loadedCULayerData[layer.name] = geojsonResults[index];
+  });
+
+  geojsonSMULayers.forEach((layer, index) => {
+    loadedSMULayerData[layer.name] = geojsonSMUResults[index];
+  });
+}
+
+async function initialize() {
+  try {
+    const data = await fetchData(csvfile);
+    await loadGeoJSONFiles();
+    
+    const urlParams = readURLParams();
+    createSelectors('selectorContainer', selectors);
+    
+    if (Object.keys(urlParams).length > 0) {
+      updateElements(data, urlParams);
+    } else {
+      populateSelectors(data);
+      createMap(data);
+      createDataTable(data);
+      createChart(data);
+    }
+    
+    registerEventListeners(data);
+  } catch (error) {
+    console.error('Error initializing application:', error);
+  }
 }
 
 initialize();
