@@ -125,22 +125,21 @@ async function loadGeoJSONFiles() {
 function showLoadingIndicator(show = false) {
   const loadingIndicator = document.getElementById('loadingIndicator');
   const elementsToToggle = [
-    // 'selectorContainer',
-    // 'mapContainer',
+    'selectorContainer',
+    'mapContainer',
     'resetButton',
-    // 'dataTableContainer',
-    // 'chartContainer'
+    'dataTableContainer',
+    'chartContainer'
   ];
 
   if (show) {
-    loadingIndicator.classList.remove('hidden');
     elementsToToggle.forEach(id => {
-      document.getElementById(id).classList.add('hidden');
+      document.getElementById(id).style.visibility = 'hidden';
     });
   } else {
-    loadingIndicator.classList.add('hidden');
+    loadingIndicator.style.display = 'none';
     elementsToToggle.forEach(id => {
-      document.getElementById(id).classList.remove('hidden');
+      document.getElementById(id).removeAttribute('style');
     });
   }
 }
