@@ -26,31 +26,31 @@ const selectors = [
 // Map layers
 const geojsonLayers = [
   {
-    filename: './data/CK_CU_Simp100.json',
+    filename: './data/CK_CU_Simp1000.geojson',
     fillColor: '#bd175d',
     name: 'Chinook CUs'
   }, {
-    filename: './data/CM_CU_Simp100.json',
+    filename: './data/CM_CU_Simp1000.geojson',
     fillColor: '#a617bd',
     name: 'Chum CUs',
   }, {
-    filename: './data/CO_CU_Simp100.json',
+    filename: './data/CO_CU_Simp1000.geojson',
     fillColor: '#3817bd',
     name: 'Coho CUs',
   }, {
-    filename: './data/PKE_CU_Simp100.json',
+    filename: './data/PKE_CU_Simp1000.geojson',
     fillColor: '#007293',
     name: 'PKE CUs',
   }, {
-    filename: './data/PKO_CU_Simp100.json',
+    filename: './data/PKO_CU_Simp1000.geojson',
     fillColor: '#009456',
     name: 'PKO CUs',
   }, {
-    filename: './data/SEL_CU_Simp100.json',
+    filename: './data/SEL_CU_Simp1000.geojson',
     fillColor: '#b97002',
     name: 'SEL CUs',
   }, {
-    filename: './data/SER_CU_Simp100.json',
+    filename: './data/SER_CU_Simp1000.geojson',
     fillColor: '#c04500',
     name: 'SER CUs',
   }
@@ -58,31 +58,31 @@ const geojsonLayers = [
 
 const geojsonSMULayers = [
   {
-    filename: './data/CK_SMU_Simp100.json',
+    filename: './data/CK_SMU_Simp1000.geojson',
     fillColor: '#ba6186',
     name: 'Chinook SMUs'
   }, {
-    filename: './data/CM_SMU_Simp100.json',
+    filename: './data/CM_SMU_Simp1000.geojson',
     fillColor: '#c16fce',
     name: 'Chum SMUs'
   }, {
-    filename: './data/CO_SMU_Simp100.json',
+    filename: './data/CO_SMU_Simp1000.geojson',
     fillColor: '#735ec3',
     name: 'Coho SMUs',
   }, {
-    filename: './data/PKE_SMU_Simp100.json',
+    filename: './data/PKE_SMU_Simp1000.geojson',
     fillColor: '#6d9ca9',
     name: 'PKE SMUs',
   }, {
-    filename: './data/PKO_SMU_Simp100.json',
+    filename: './data/PKO_SMU_Simp1000.geojson',
     fillColor: '#77d3ad',
     name: 'PKO SMUs',
   }, {
-    filename: './data/SEL_SMU_Simp100.json',
+    filename: './data/SEL_SMU_Simp1000.geojson',
     fillColor: '#cd9d55',
     name: 'SEL SMUs',
   }, {
-    filename: './data/SER_SMU_Simp100.json',
+    filename: './data/SER_SMU_Simp1000.geojson',
     fillColor: '#d98a5e',
     name: 'SER SMUs',
   }
