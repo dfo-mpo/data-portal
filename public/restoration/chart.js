@@ -255,8 +255,11 @@ function createChart(data) {
     return;
   }
 
+  // filter unique data by projects
+  const uniqueProjects = getUniqueRows(data, dataNameAlias.PrjName);
+
   chartContainer.innerHTML = "<div id='chartDiv'><h4>Total Number of Projects</h4></div>";
-  const projectCountsByYear = countProjectsByYear(data, dataNameAlias.Year);
+  const projectCountsByYear = countProjectsByYear(uniqueProjects, dataNameAlias.Year);
   projectCountsByYear.sort((a, b) => a["Year"].localeCompare(b["Year"]));
   // linechart(filterByYear(projectCountsByYear, 2018, 2024));
   barChart(filterByYear(projectCountsByYear));

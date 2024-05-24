@@ -8,21 +8,6 @@ function extractColumns(data, headers) {
   });
 }
 
-function getUniqueRows(data) {
-  const uniqueRows = [];
-  const seen = new Set();
-
-  data.forEach(row => {
-    const rowString = JSON.stringify(row);
-    if (!seen.has(rowString)) {
-      uniqueRows.push(row);
-      seen.add(rowString);
-    }
-  });
-
-  return uniqueRows;
-}
-
 function createStaticTable(data) {
   // create subset by columns, and then get unique data rows
   const dataHeaders = [

@@ -47,3 +47,18 @@ function readURLParams() {
 
   return params;
 }
+
+function getUniqueRows(data, key = '') {
+  const uniqueRows = [];
+  const seen = new Set();
+
+  data.forEach(row => {
+    const value = key ? row[key] : JSON.stringify(row);
+    if (!seen.has(value)) {
+      uniqueRows.push(row);
+      seen.add(value);
+    }
+  });
+
+  return uniqueRows;
+}
