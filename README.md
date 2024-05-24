@@ -56,15 +56,15 @@ The data files are placed under `public/restoration/data/`. If you do not find t
 
 ### GeoJSON Files
 
-- **Folder:** [Pacific Salmon Strategy Initiative - GeoJSON_CU_SMU_TestingOnly - All Documents (sharepoint.com)](https://086gc.sharepoint.com/sites/PacificSalmonTeam/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=nkBEMH&cid=1efc5c36%2D8912%2D41bd%2D86bc%2Db9f8b1d8d722&FolderCTID=0x012000B2A9CCF8A4A1B640A09C28AE5E1B0F18&id=%2Fsites%2FPacificSalmonTeam%2FShared%20Documents%2FGeneral%2F02%20%2D%20PSSI%20Secretariat%20Teams%2F04%20%2D%20Strategic%20Salmon%20Data%20Policy%20and%20Analytics%2F09%20%2D%20Pacific%20Salmon%20Data%20Portal%2FMVP%2FDatasets%2FHabitat%20Restoration%20Projects%2FGeoJSON%5FCU%5FSMU%5FTestingOnly&viewid=5f81282c%2D489d%2D4d08%2D9bb0%2Dc497b2c999e3)
+- **Folder:** [Pacific Salmon Strategy Initiative - GeoJSON_CU_SMU_TestingOnly - All Documents (sharepoint.com)](https://086gc.sharepoint.com/sites/PacificSalmonTeam/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=nkBEMH&cid=1efc5c36%2D8912%2D41bd%2D86bc%2Db9f8b1d8d722&FolderCTID=0x012000B2A9CCF8A4A1B640A09C28AE5E1B0F18&id=%2Fsites%2FPacificSalmonTeam%2FShared%20Documents%2FGeneral%2F02%20%2D%20PSSI%20Secretariat%20Teams%2F04%20%2D%20Strategic%20Salmon%20Data%20Policy%20and%20Analytics%2F09%20%2D%20Pacific%20Salmon%20Data%20Portal%2FMVP%2FDatasets%2FHabitat%20Restoration%20Projects%2FGeoJSON%5FCU%5FSMU%5FTestingOnly%5F2024052024&viewid=5f81282c%2D489d%2D4d08%2D9bb0%2Dc497b2c999e3)
 - **Files:** There are 14 GeoJSON layers, 7 CU layers, and 7 SMU layers.
   - **CU Layers:**
-    - `CK_CU_Simp100.json`
-    - `CM_CU_Simp100.json`
+    - `CK_CU_Simp100.geojson`
+    - `CM_CU_Simp100.geojson`
     - ...
   - **SMU Layers:**
-    - `CK_SMU_Simp100.json`
-    - `CM_SMU_Simp100.json`
+    - `CK_SMU_Simp100.geojson`
+    - `CM_SMU_Simp100.geojson`
     - ...
 
 These files are integral to the project and are referenced as the major values for the variables `geojsonLayers` and `geojsonSMULayers` in the `global.js` file.
