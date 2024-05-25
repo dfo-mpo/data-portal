@@ -1,6 +1,6 @@
 function createMarkers(map, locationData) {
   let popupByClick = false;
-  let mouseOverTimeout;
+  let popupTimeout;
   const markerGroup = L.layerGroup();
 
   const markerStyles = {
@@ -29,18 +29,26 @@ function createMarkers(map, locationData) {
     // skip to draw markers for projects without lat & lng
     if (!isNaN(lat) && !isNaN(lng)) {
       const coordinate = [lat, lng];
-      const marker = L.circleMarker(coordinate, markerStyles.base).addTo(markerGroup);
+      let marker = L.circleMarker(coordinate, markerStyles.base).addTo(markerGroup);
 
-      const popupContent = `
-        <div class="popup-content">
-          <h3>${location[dataNameAlias.PrjName]}</h3>
-          <div class="popup-info">
-            <p><strong>CU Name:</strong> ${location[dataNameAlias.CU_Name]}</p>
-            <p><strong>Latitude:</strong> ${location[dataNameAlias.Lat]}</p>
-            <p><strong>Longitude:</strong> ${location[dataNameAlias.Lng]}</p>
-          </div>
-        </div>
-      `;
+      let keysToOmit = [
+        'id',
+        dataNameAlias.PrjName,
+        // dataNameAlias.PrjLead,
+        // dataNameAlias.PrjDesc,
+        dataNameAlias.CU_Name,
+        dataNameAlias.SMU_Name,
+        dataNameAlias.Year,
+        dataNameAlias.CU_Index,
+        dataNameAlias.Species,
+      ];
+      let popupContent = `<div class="popup-content"><h3>${location[dataNameAlias.PrjName]}</h3><div class="popup-info">`;
+      for (const key in location) {
+        if (Object.hasOwnProperty.call(location, key) && !keysToOmit.includes(key)) {
+          popupContent += `<p><strong>${key}:</strong> ${location[key]}</p>`;
+        }
+      }
+      popupContent += '</div></div>';
 
       marker.on({
         click: () => {
@@ -53,33 +61,30 @@ function createMarkers(map, locationData) {
               marker.setStyle(markerStyles.unselected);
             })
             marker.setStyle({
-              ...markerStyles.base,
+              // ...markerStyles.base,
               ...markerStyles.selected
             });
-            map.flyTo(marker.getLatLng(), map.getZoom(), { animate: true, duration: .5 });
+
             makePopup(marker, popupContent, [0, -10]);
+            map.flyTo(marker.getLatLng(), map.getZoom(), { animate: true, duration: .5 });
 
             popupByClick = true;
           }
         },
 
         mouseover: () => {
-          clearTimeout(mouseOverTimeout);
-          mouseOverTimeout = setTimeout(() => {
-            if (!popupByClick) {
-              makePopup(marker, popupContent, [0, -10]);
-            }
-          }, 300);
-        },
-
-        mouseout: () => {
-          clearTimeout(mouseOverTimeout);
           if (!popupByClick) {
-            marker.closePopup();
+            popupTimeout = setTimeout(() => {
+              makePopup(marker, popupContent, [0, -10]);
+            }, 300);
           }
         },
 
-        popupclose: () => {
+        mouseout: () => {
+          if (!popupByClick) {
+            clearTimeout(popupTimeout);
+            marker.closePopup();
+          }
         },
       })
 
@@ -284,14 +289,14 @@ function createGeoLayers(map, locationData, markerGroup, geojsonLayers, control,
         });
 
         const properties = layer.feature.properties;
-        const keysToOmit = ['OBJECTID_1', 'ObjectID', 'Shape_Area', 'Shape_Length'];
+        let keysToOmit = ['OBJECTID_1', 'OBJECTID'];
         let title = '';
-        if (properties['CU_Name']) {
-          title = `<h3><strong>CU:</strong> ${properties['CU_Name']}</h3>`;
-          keysToOmit.push('CU_Name');
-        } else if (properties['SMU_NAME']) {
-          title = `<h3><strong>SMU:</strong> ${properties['SMU_NAME']}</h3>`;
-          keysToOmit.push('SMU_NAME');
+        if (properties['CU']) {
+          title = `<h3><strong>CU:</strong> ${properties['CU']}</h3>`;
+          keysToOmit.push('CU');
+        } else if (properties['SMU']) {
+          title = `<h3><strong>SMU:</strong> ${properties['SMU']}</h3>`;
+          keysToOmit.push('SMU');
         }
 
         let popupContent = '<div class="popup-content">';
@@ -302,7 +307,6 @@ function createGeoLayers(map, locationData, markerGroup, geojsonLayers, control,
             popupContent += `<p><strong>${key}:</strong> ${properties[key]}</p>`;
           }
         }
-
         popupContent += '</div></div>';
         
         makePopup(layer, popupContent, [0, 0], latlng);
