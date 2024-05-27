@@ -346,7 +346,8 @@ function createMap(locationData) {
     center: [50.9267, -124.6476],
     zoom: 7,
     zoomControl: false,
-    attributionControl: false
+    attributionControl: false,
+    maxZoom: 12
   });
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
