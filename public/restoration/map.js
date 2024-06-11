@@ -387,11 +387,11 @@ function removeAllGeoJsonLayers() {
 function createGeoLayers(locationData, geojsonLayers, layerType, loadedGeoJsonData) {
   const mappingKeys = {
     CU: {
-      source: dataset.headers.CU_ID,        // header from CU dataset to match geojson property
+      source: dataset.headers.CU_ID,        // header from dataset to match CU geojson property
       target: 'FULL_CU_IN'                  // property from CU geojson
     },
     SMU: {
-      source: dataset.headers.SMU_ID,       // header from SMU dataset to match geojson property
+      source: dataset.headers.SMU_ID,       // header from dataset to match SMU geojson property
       target: 'SMU_ID'                      // property from SMU geojson
     }
   };
