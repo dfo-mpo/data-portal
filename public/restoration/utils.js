@@ -1,4 +1,4 @@
-async function checkFileExistence(url) {
+export async function checkFileExistence(url) {
   try {
     const response = await fetch(url, { method: 'HEAD' });
     return response.ok;
@@ -20,7 +20,7 @@ function getRandomColor() {
   return hex;
 }
 
-function createElement(tagName, attributes = {}, textContent = '') {
+function createElement(tagName, attributes, textContent) {
   const element = document.createElement(tagName);
 
   if (attributes) {
@@ -36,7 +36,7 @@ function createElement(tagName, attributes = {}, textContent = '') {
   return element;
 }
 
-function readURLParams() {
+export function readURLParams() {
   const urlSearchParams = new URLSearchParams(window.location.search);
 
   const params = {};
@@ -48,7 +48,9 @@ function readURLParams() {
   return params;
 }
 
-function getUniqueRows(data, key = '') {
+export function getUniqueRows(data, key) {
+  // remove duplicated rows
+  // key: optional. if exists, return only the first row contains the same key
   const uniqueRows = [];
   const seen = new Set();
 

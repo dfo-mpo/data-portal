@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Restoration</title>
+    <title>Salmon Habitat Restoration Projects</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.5/css/dataTables.dataTables.css" />    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" crossorigin="anonymous">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="./styles.css">
 
 </head>
 <body>
-    <h1>Habitat Restoration Projects</h1>
-    <div id="dashboardContainer">
-        <div id="loadingIndicator" class="loading">Loading data, please wait...</div>
-        <div id="selectorContainer" class="grid"></div>
-        <div id="mapContainer"></div>
-        <div><button id="resetButton"><i class="fa-solid fa-rotate-right"></i> Reset Map</button></div>
-        <div id="dataTableContainer"></div>
-        <div id="chartContainer"></div>
+    <div id="dashboard-container">
+        <div id="loading-indicator" class="loading">Loading data, please wait...</div>
+        <div id="selector-container" class="grid-container"></div>
+        <div id="map-container"></div>
+        <div id="reset-btn-container" style="display: none;"><button id="reset-btn"><i class="fa-solid fa-rotate"></i> Reset Map</button></div>
     </div>
     
     <!-- Amcharts -->
@@ -33,12 +30,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/2.0.5/js/dataTables.js"></script>
 
-    <script src="global.js"></script>
-    <script src="utils.js"></script>
-    <script src="getdata.js"></script>
-    <script src="chart.js"></script>
-    <script src="map.js"></script>
-    <script src="datatable.js"></script>
-    <script src="restoration.js"></script>
+    <script type="module" src="./restoration.js"></script>
 </body>
 </html>

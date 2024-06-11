@@ -1,3 +1,6 @@
+import { dataset } from './global.js';
+import { checkFileExistence  } from "./utils.js";
+
 function readCSVFile(fileName) {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -18,10 +21,10 @@ function readCSVFile(fileName) {
 }
 
 function csvToJSON(csvString) {
-  const lines = csvString.split('\n');
+  const lines = csvString.split('\r\n');
   const headers = lines[0].split(',').map(header => header.trim()); // `.replace(/\s+/g, '')` Add this to remove spaces
   const jsonData = [];
-  const strToFloat = [dataNameAlias.Lat, dataNameAlias.Lng];
+  const strToFloat = [dataset.headers.lat, dataset.headers.lng];
 
   headers[0] = (headers[0] === '') ? 'id' : headers[0];
 
@@ -67,3 +70,5 @@ async function fetchData(csvfile) {
     throw error;
   }
 }
+
+export { fetchData };

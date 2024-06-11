@@ -1,26 +1,27 @@
-// Main csv
-const csvfile = './data/habitatrestorationprojects_dataportal_mockupMay27.csv';
-
-// Dataset schema mapping
-const dataNameAlias = {
-  'PrjName': 'Project Name',
-  'PrjLead': 'Project Lead Organization',
-  'PrjDesc': 'Project Description',
-  'Lat': 'Latitude in Decimal Degrees',
-  'Lng': 'Longitude in Decimal Degrees',
-  'CU_Name': 'MAX_CU_Nam',
-  'SMU_Name': 'SMU_Name',
-  'Year': 'Reporting Fiscal Year',
-  'CU_Index': 'FULL_CU_IN',
-  'Species': 'FullSpecies',
+const dataset = {
+  path: './data/Salmon_Habitat_Restoration_Projects_Final.csv',
+  headers: {
+    'site_species_id': 'site_species_id',
+    'project_name': 'project_name',
+    'project_description': 'project_description',
+    'year': 'reporting_fy',
+    'lat': 'site_latitude',
+    'lng': 'site_longitude',
+    'ecosystem_type': 'ecosystem_type',
+    'species_name': 'species_name',
+    'CU_Name': 'CU_Name',
+    'CU_ID': 'FULL_CU_IN',           // used to match CU geoson for filters
+    'SMU_Name': 'SMU_Display',       // used to match SMU geoson for filters
+    'SMU_ID': 'SMU_ID'
+  }
 }
 
 // Configure dropdown
 const selectors = [
-  { id: 'projectNameSelector', key: dataNameAlias.PrjName, name: 'Project Names' },
-  { id: 'speciesSelector', key: dataNameAlias.Species, name : 'Species' },
-  { id: 'cuSelector', key: dataNameAlias.CU_Name, name : 'CU Names' },
-  { id: 'smuSelector', key: dataNameAlias.SMU_Name, name : 'SMU Names' }
+  { id: 'projectNameSelector', key: dataset.headers.project_name, name: 'Project Names' },
+  { id: 'speciesSelector', key: dataset.headers.species_name, name : 'Species' },
+  { id: 'cuSelector', key: dataset.headers.CU_Name, name : 'CU Names' },
+  { id: 'smuSelector', key: dataset.headers.SMU_Name, name : 'SMU Names' }
 ];
 
 // Map layers
@@ -87,3 +88,10 @@ const geojsonSMULayers = [
     name: 'SER SMUs',
   }
 ];
+
+export {
+  dataset,
+  selectors,
+  geojsonLayers,
+  geojsonSMULayers,
+};

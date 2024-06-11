@@ -1,3 +1,6 @@
+import { dataset } from './global.js';
+import { getUniqueRows } from "./utils.js";
+
 function countProjectsByYear(data, key) {
   const yearCounts = {};
   data.forEach(project => {
@@ -15,7 +18,7 @@ function linechart(data) {
   am5.ready(function() {
     // Create root element
     // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-    var root = am5.Root.new("chartDiv");
+    var root = am5.Root.new("chart");
     
     // Set themes
     // https://www.amcharts.com/docs/v5/concepts/themes/
@@ -121,7 +124,7 @@ function barChart(data) {
 
     // Create root element
     // https://www.amcharts.com/docs/v5/getting-started/#Root_element
-    var root = am5.Root.new("chartDiv");
+    var root = am5.Root.new("chart");
     
     // Set themes
     // https://www.amcharts.com/docs/v5/concepts/themes/
@@ -239,28 +242,26 @@ function barChart(data) {
   
 }
 
-function filterByYear(data, yearThresholdStart = '', yearThresholdEnd = '') {
+function filterByYear(data, yearThresholdStart, yearThresholdEnd) {
   return data.filter(obj => {
     const yearRange = obj["Year"].split("-").map(Number);
-    return (yearThresholdStart != '' && yearThresholdEnd != '') ? 
+    return (yearThresholdStart && yearThresholdEnd) ? 
       yearRange.some(Year => Year > yearThresholdStart && Year < yearThresholdEnd) : yearRange;
     // return yearRange.some(Year => Year > yearThresholdStart && Year < yearThresholdEnd);
   });
 }
 
 function createChart(data) {
-  const chartContainer = document.getElementById('chartContainer');
+  const chartContainer = document.getElementById('chart-container');
+  if(!chartContainer) return;
 
-  if(!chartContainer) {
-    return;
-  }
+  chartContainer.innerHTML = '<h4>Total Number of Projects</h4><div id="chart"></div>';
 
-  // filter unique data by projects
-  const uniqueProjects = getUniqueRows(data, dataNameAlias.PrjName);
-
-  chartContainer.innerHTML = "<div id='chartDiv'><h4>Total Number of Projects</h4></div>";
-  const projectCountsByYear = countProjectsByYear(uniqueProjects, dataNameAlias.Year);
+  const uniqueProjects = getUniqueRows(data, dataset.headers.project_name);
+  const projectCountsByYear = countProjectsByYear(uniqueProjects, dataset.headers.year);
   projectCountsByYear.sort((a, b) => a["Year"].localeCompare(b["Year"]));
   // linechart(filterByYear(projectCountsByYear, 2018, 2024));
   barChart(filterByYear(projectCountsByYear));
 }
+
+export { createChart };
