@@ -10,9 +10,9 @@ const dataset = {
     'ecosystem_type': 'ecosystem_type',
     'species_name': 'species_name',
     'CU_Name': 'CU_Name',
-    'CU_ID': 'FULL_CU_IN',           // used to match CU geoson for filters
-    'SMU_Name': 'SMU_Display',       // used to match SMU geoson for filters
-    'SMU_ID': 'SMU_ID'
+    'CU_ID': 'FULL_CU_IN',          // used to match CU geoson for filters
+    'SMU_Name': 'SMU_Display',
+    'SMU_ID': 'SMU_ID'              // used to match SMU geoson for filters
   }
 }
 
