@@ -37,7 +37,7 @@ function createMarkers(locationData) {
   const markerPopupContentMap = {
     title: dataset.headers.project_name,
     fields: [
-      { key: dataset.headers.year, label: 'Fiscal Year ' },
+      { key: dataset.headers.year, label: 'Fiscal Year' },
       { key: dataset.headers.ecosystem_type, label: 'Ecosystem Type'},
       { key: dataset.headers.species_name, label: 'Species'},
       { key: dataset.headers.CU_Name, label: 'CU Name'},
