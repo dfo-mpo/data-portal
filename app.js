@@ -17,6 +17,11 @@ app.get('/restoration', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'restoration', 'restoration.html'));
 });
 
+// Define a route for the restoration page
+app.get('/restoration/gc', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'restoration', 'restoration_themed.html'));
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
   console.log(`http://localhost:${port}/restoration/`);
