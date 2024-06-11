@@ -13,20 +13,21 @@ const loadedSMULayerData = { layers: '' };
 
 const markerStyles = {
   base: {
-    radius: 9,
+    radius: 8,
     weight: 1,
     color: 'white',
     opacity: .8,
-    fillColor: 'rgba(255, 165, 0, 1)',
+    fillColor: 'rgba(255, 180, 60, 1)',
     fillOpacity: .7
   },
   selected: {
+    radius: 10,
     color: '#3388ff',
     fillColor: '#3388ff',
   },
   unselected: {
     opacity: .025,
-    fillColor: 'rgba(255, 165, 0, .2',
+    fillColor: 'rgba(255, 180, 60, .2)',
   },
 };
 
@@ -594,7 +595,7 @@ function createMap() {
       zoom: 6,
       zoomControl: false,
       attributionControl: false,
-      maxZoom: 12
+      maxZoom: 14
     });
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
