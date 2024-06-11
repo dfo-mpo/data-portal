@@ -16,12 +16,15 @@ function createSelectors(containerId, selectors) {
   selectors.forEach(selector => {
     const div = document.createElement('div');
     div.classList = 'grid-item';
+    
     const label = document.createElement('label');
     label.setAttribute('for', selector.id);
     label.textContent = selector.name;
+
     const select = document.createElement('select');
     select.id = selector.id;
     select.classList.add('main-selector');
+    
     div.appendChild(label);
     div.appendChild(select);
     fragment.appendChild(div);
@@ -177,8 +180,10 @@ async function loadGeoJSONFiles(geojsonLayers) {
   const geojsonPromises = geojsonLayers.map(async layer => {
     const cachedData = await getFromIndexedDB('geojsonLayers', layer.name);
     if (cachedData) {
+      console.log('Reload cached data...');
       return cachedData;
     } else {
+      console.log('Fetch new data...');
       const response = await fetch(layer.filename);
       const data = await response.json();
       await saveToIndexedDB('geojsonLayers', layer.name, data);
