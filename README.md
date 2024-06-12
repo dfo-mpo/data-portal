@@ -57,7 +57,7 @@ The data files are placed under `public/restoration/data/`. If you do not find t
 ### CSV data File
 
 - **Folder:** [Pacific Salmon Strategy Initiative - Salmon Habitat Restoration Projects - All Documents (sharepoint.com)](https://086gc.sharepoint.com/sites/PacificSalmonTeam/Shared%20Documents/Forms/AllItems.aspx?csf=1&web=1&e=oRzAUm&cid=40afed46%2D5a8f%2D4b8c%2D8a40%2Dfd01aa1325bf&FolderCTID=0x012000B2A9CCF8A4A1B640A09C28AE5E1B0F18&id=%2Fsites%2FPacificSalmonTeam%2FShared%20Documents%2FGeneral%2F02%20%2D%20PSSI%20Secretariat%20Teams%2F04%20%2D%20Strategic%20Salmon%20Data%20Policy%20and%20Analytics%2F09%20%2D%20Pacific%20Salmon%20Data%20Portal%2FMVP%2FDatasets%2FCurrent%20Data%20Inventory%2FSalmon%20Habitat%20Restoration%20Projects&viewid=5f81282c%2D489d%2D4d08%2D9bb0%2Dc497b2c999e3)
-- **File:** `Salmon_Habitat_Restoration_Projects_Final.csv`
+- **File:** `SalmonHabitatRestorationProjects_DataPortal_June_FinalFields_20240612.csv`
 - **Schema:** The CSV file schema maps dataset columns to descriptive aliases used throughout the project.
 
 ### GeoJSON Files
