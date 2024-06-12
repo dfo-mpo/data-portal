@@ -1,10 +1,12 @@
 import { dataset } from './global.js';
 import { getUniqueRows } from "./utils.js";
 
-const dataHeaders = [
+const subsetHeaders = [
   dataset.headers.project_name,
   dataset.headers.project_description,
   dataset.headers.year,
+  dataset.headers.ecosystem_type,
+  dataset.headers.species_name,
   dataset.headers.lat,
   dataset.headers.lng,
 ];
@@ -40,7 +42,7 @@ function createStaticTable(data) {
   dataHeadRow.appendChild(document.createElement('th'));
 
   // exclude lat & lng columns
-  const headersToDisplay = dataHeaders.filter(header => header !== dataset.headers.lat && header !== dataset.headers.lng);
+  const headersToDisplay = subsetHeaders.filter(header => header !== dataset.headers.lat && header !== dataset.headers.lng);
   headersToDisplay.forEach(header => {
     const col = document.createElement('th');
     col.textContent = header;
@@ -75,6 +77,28 @@ function createStaticTable(data) {
   });
 }
 
+function processSubset(subset, dataset) {
+  if (!subset || !dataset || !dataset.headers) {
+    console.error("Invalid subset of dataset");
+    return [];
+  }
+
+  return subset.map(row => {
+    const latKey = dataset.headers.lat;
+    const lngKey = dataset.headers.lng;
+
+    const status = isNaN(row[latKey] || row[lngKey]) ? 'Unmapped' : 'Mapped';
+
+    const {
+      [latKey]: lat,
+      [lngKey]: lng,
+      ...rest
+    } = row;
+
+    return { ...rest, status };
+  })
+}
+
 function createDataTable(data) {
   const dataTableContainer = document.getElementById('data-table-container');
   if(!dataTableContainer) return;
@@ -82,22 +106,18 @@ function createDataTable(data) {
   dataTableContainer.innerHTML = '<div id="data-table-div"></div>';
 
   // create subset by columns, and then get unique data rows
-  const subset = getUniqueRows(extractColumns(data, dataHeaders));
-  
-  createStaticTable(
-    // map each row with new column 'status', determine based on presence of lat and lng
-    subset.map(row => {
-      const status = isNaN(row[dataset.headers.lat]) || isNaN(row[dataset.headers.lng]) ? 'Unmapped' : 'Mapped';
-      const { [dataset.headers.lat]: lat, [dataset.headers.lng]: lng, ...rest } = row;
-      return { ...rest, status };
-    })
-  );
+  const subset = getUniqueRows(extractColumns(data, subsetHeaders));
+
+  // get column of status by checking lat & lng
+  const processedSubset = processSubset(subset, dataset);
+
+  createStaticTable(processedSubset);
 
   let table = new DataTable('#data-table', {
     paging: false,
     scrollCollapse: true,
-    // set scrolling area height, equation is (map-height - chart-height - padding - search-bar-height - header-row-height - bottom-info-height)
-    scrollY: 'calc(var(--map-base-height) - var(--chart-base-height) - 40px - 37px - 27px - 28px)',
+    // map-height - chart-height - padding - search-bar-height - header-row-height - bottom-info-height
+    scrollY: 'calc(var(--map-base-height) - var(--chart-base-height) - 40px - 37px - 28px - 28px)',
     order: [[1, 'asc']],
     columnDefs: [
       { 
@@ -110,8 +130,10 @@ function createDataTable(data) {
       } ,
       { target: 1, title: 'Project Name' },
       { target: 2, title: 'Project Description', visible: false },
-      { target: 3, title: 'Fiscal Year', width: '100px' },
-      { target: 4, title: 'Status'}
+      { target: 3, title: 'Fiscal Year', width: '110px' },
+      { target: 4, title: 'Ecosystem Type', visible: false },
+      { target: 5, title: 'Species', visible: false },
+      { target: 6, title: 'Status'},
     ],
     layout: {
       topStart: {
@@ -119,17 +141,21 @@ function createDataTable(data) {
       },
       topEnd: null,
       bottomStart: 'info',
-      bottomEnd: null, // { paging: { type: 'simple_numbers', numbers: 5} },
+      bottomEnd: null,
     }
   });
 
   function format(data) {
     return (
       `
-      <p style="padding-left: 20px; padding-right: 20px;">
+      <p style="margin: 6px 22px 6px 22px;">
         <b>Project Description:</b>
         <br>
         ${data[2]}
+        <br>
+        <b>Species:</b> ${data[5]}
+        <br>
+        <b>Ecosystem Type:</b> ${data[4]}
       </p>
       `
     );
