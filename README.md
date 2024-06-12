@@ -81,7 +81,6 @@ These files are integral to the project and are referenced as the major values f
 
 - The project is designed to run on Node.js version 20.
 - It utilizes Express.js for backend routing.
-- The scripts employ vanilla JavaScript methods for simplicity and maintainability.
 
 ### GitHub Repository
 
