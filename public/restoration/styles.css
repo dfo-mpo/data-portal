@@ -41,13 +41,13 @@ body {
 #map {
   width: 100%;
   height: var(--map-base-height);
+  font: 400 13px/140% "Noto Sans", sans-serif;
 }
 
 /* ////////////////////////// */
 /* Info Control Styles */
 .info-control {
   padding: 10px;
-  font-size: 12px;
   background: rgba(255 255 255 / 80%);
   box-shadow: 0 0 15px rgba(0 0 0 / 20%);
   border-radius: 5px;
