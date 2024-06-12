@@ -1,5 +1,5 @@
 const dataset = {
-  path: './data/Salmon_Habitat_Restoration_Projects_Final.csv',
+  path: './data/SalmonHabitatRestorationProjects_DataPortal_June_FinalFields_20240612(in).csv',
   headers: {
     'site_species_id': 'site_species_id',
     'project_name': 'project_name',

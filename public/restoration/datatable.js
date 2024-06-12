@@ -5,7 +5,6 @@ const subsetHeaders = [
   dataset.headers.project_name,
   dataset.headers.project_description,
   dataset.headers.year,
-  dataset.headers.ecosystem_type,
   dataset.headers.species_name,
   dataset.headers.lat,
   dataset.headers.lng,
@@ -131,9 +130,8 @@ function createDataTable(data) {
       { target: 1, title: 'Project Name' },
       { target: 2, title: 'Project Description', visible: false },
       { target: 3, title: 'Fiscal Year', width: '110px' },
-      { target: 4, title: 'Ecosystem Type', visible: false },
-      { target: 5, title: 'Species', visible: false },
-      { target: 6, title: 'Status'},
+      { target: 4, title: 'Species', visible: false },
+      { target: 5, title: 'Status'},
     ],
     layout: {
       topStart: {
@@ -152,10 +150,8 @@ function createDataTable(data) {
         <b>Project Description:</b>
         <br>
         ${data[2]}
-        <br>
-        <b>Species:</b> ${data[5]}
-        <br>
-        <b>Ecosystem Type:</b> ${data[4]}
+        <br><br>
+        <b>Species:</b> ${data[4]}
       </p>
       `
     );
