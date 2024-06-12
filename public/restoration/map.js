@@ -639,16 +639,17 @@ function createMap() {
 
     // add elements to layer list control
     const layerListContainer = document.getElementById('layer-list-container');
-    
-    const layerListTitleElement = document.createElement('h4');
-    layerListTitleElement.textContent = 'Layers';
-    layerListContainer.appendChild(layerListTitleElement);
 
     // add maker layer to list control
     addLayerToControl(layerListContainer, 'Coordinates', 'fa-eye');
 
     // add geojson layers to list control
     if (geojsonLayers && geojsonLayers.some(item => Object.keys(item).length)) {
+      const cuTitle = document.createElement('h4');
+      cuTitle.className = 'divider';
+      cuTitle.textContent = 'CU Layers';
+      layerListContainer.appendChild(cuTitle);
+
       geojsonLayers.forEach(geojsonLayer => {
         addLayerToControl(layerListContainer, geojsonLayer.name);
       })
@@ -656,10 +657,10 @@ function createMap() {
 
     if (geojsonSMULayers && geojsonSMULayers.some(item => Object.keys(item).length)) {
       // add smu layer title
-      const smuTitleElement = document.createElement('h4');
-      smuTitleElement.className = 'divider';
-      smuTitleElement.textContent = 'SMU Layers';
-      layerListContainer.appendChild(smuTitleElement);
+      const smuTitle = document.createElement('h4');
+      smuTitle.className = 'divider';
+      smuTitle.textContent = 'SMU Layers';
+      layerListContainer.appendChild(smuTitle);
 
       geojsonSMULayers.forEach(geojsonLayer => {
         addLayerToControl(layerListContainer, geojsonLayer.name);
