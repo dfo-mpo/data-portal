@@ -24,6 +24,8 @@ function extractColumns(data, headers) {
 }
 
 function createStaticTable(data, tableId) {
+  const headers = Object.keys(data[0]);
+
   // create new table
   const dataTable = document.createElement('table');
   dataTable.setAttribute('id', tableId);
@@ -40,18 +42,11 @@ function createStaticTable(data, tableId) {
   // column header for collapsible button
   dataHeadRow.appendChild(document.createElement('th'));
 
-  // exclude lat & lng columns
-  const headersToDisplay = subsetHeaders.filter(header => header !== dataset.headers.lat && header !== dataset.headers.lng);
-  headersToDisplay.forEach(header => {
+  headers.forEach(header => {
     const col = document.createElement('th');
     col.textContent = header;
     dataHeadRow.appendChild(col);
   });
-
-  // add status column header
-  const statusCol = document.createElement('th');
-  statusCol.textContent = 'Status';
-  dataHeadRow.appendChild(statusCol);
 
   // create table body
   const dataBody = document.createElement('tbody');
@@ -66,12 +61,9 @@ function createStaticTable(data, tableId) {
     // add collapsible button column 
     dataRow.innerHTML += '<td class="dt-control"></td>';
 
-    headersToDisplay.forEach(header => {
+    headers.forEach(header => {
       dataRow.innerHTML += `<td>${row[header]}</td>`;
     })
-
-    // status column
-    dataRow.innerHTML += `<td>${row['status']}</td>`;
 
     fragment.appendChild(dataRow);
   });
@@ -91,9 +83,12 @@ function processSubset(subset, dataset) {
     const lngKey = dataset.headers.lng;
     const status = isNaN(row[latKey] || row[lngKey]) ? 'Unmapped' : 'Mapped';
 
-    const { [latKey]: lat, [lngKey]: lng, ...rest } = row;
+    row['status'] = status;
 
-    return { ...rest, status };
+    // const { [latKey]: lat, [lngKey]: lng, ...rest } = row;
+    // return { ...rest, status };
+
+    return row;
   })
 }
 
@@ -117,7 +112,9 @@ function initializeDataTable(tableId) {
       { target: 2, title: 'Project Description', visible: false },
       { target: 3, title: 'Fiscal Year', width: '110px' },
       { target: 4, title: 'Species', visible: false },
-      { target: 5, title: 'Status'},
+      { target: 5, title: 'Site Latitude', visible: false },
+      { target: 6, title: 'Site Longitude', visible: false },
+      { target: 7, title: 'Status'},
     ],
     layout: {
       topStart: {
@@ -140,6 +137,10 @@ function addRowClickHandler(table) {
         ${data[2]}
         <br><br>
         <b>Species:</b> ${data[4]}
+        <br>
+        <b>Site Latitude:</b> ${data[5]}
+        <br>
+        <b>Site Longitude:</b> ${data[6]}
       </p>
       `
     );
