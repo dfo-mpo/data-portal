@@ -10,7 +10,7 @@ const subsetHeaders = [
   dataset.headers.lng,
 ];
 
-let originalDataTableHTML = '';
+let originalTableHTML = '';
 
 function extractColumns(data, headers) {
   // extract all rows of the dataset with only selected headers
@@ -23,14 +23,12 @@ function extractColumns(data, headers) {
   });
 }
 
-function createStaticTable(data, containerId) {
-  // create data table
-  const dataTableDiv = document.getElementById(containerId);
+function createStaticTable(data, tableId) {
+  // create new table
   const dataTable = document.createElement('table');
-  dataTable.setAttribute('id', 'data-table');
+  dataTable.setAttribute('id', tableId);
   dataTable.setAttribute('class', 'display compact'); // 'hover compact row-border'
   dataTable.style.width = '100%';
-  dataTableDiv.appendChild(dataTable);
 
   // create table head
   const dataHead = document.createElement('thead');
@@ -78,6 +76,8 @@ function createStaticTable(data, containerId) {
     fragment.appendChild(dataRow);
   });
   dataBody.appendChild(fragment);
+
+  return dataTable;
 }
 
 function processSubset(subset, dataset) {
@@ -167,9 +167,8 @@ function createDataTable(data) {
     dataTableDiv = document.createElement('div');
     dataTableDiv.setAttribute('id', 'data-table-div');
     dataTableContainer.appendChild(dataTableDiv);
+    dataTableDiv.innerHTML = '';
   }
-  
-  dataTableDiv.innerHTML = '';
 
   // create subset by columns, and then get unique data rows
   const subset = getUniqueRows(extractColumns(data, subsetHeaders));
@@ -177,30 +176,34 @@ function createDataTable(data) {
   // get column of status by checking lat & lng
   const processedSubset = processSubset(subset, dataset);
 
-  createStaticTable(processedSubset, 'data-table-div');
+  const table = createStaticTable(processedSubset, 'data-table');
+
+  dataTableDiv.innerHTML = table.outerHTML;
+
+  // create data table
+  addRowClickHandler(initializeDataTable('#data-table'));
   
   // save original table HTML
-  if (!originalDataTableHTML) {
-    originalDataTableHTML = dataTableDiv.innerHTML;
+  if (!originalTableHTML) {
+    originalTableHTML = table.outerHTML;
   }
 }
 
-function updateDataTable(filteredData, useOriginal = false) {  
+function updateDataTable(data, useOriginal = false) {  
   const dataTableDiv = document.getElementById('data-table-div');
   if(!dataTableDiv) return;
 
-  if (useOriginal && originalDataTableHTML) {
-    dataTableDiv.innerHTML = originalDataTableHTML;
+  if (useOriginal && originalTableHTML) {
+    dataTableDiv.innerHTML = originalTableHTML;
   } else {
-    dataTableDiv.innerHTML = '';
-
-    const subset = getUniqueRows(extractColumns(filteredData, subsetHeaders));
+    const subset = getUniqueRows(extractColumns(data, subsetHeaders));
     const processedSubset = processSubset(subset, dataset);
-    createStaticTable(processedSubset, 'data-table-div');
+    const table = createStaticTable(processedSubset, 'data-table');
+
+    dataTableDiv.innerHTML = table.outerHTML;
   }
 
-  const table = initializeDataTable('#data-table');
-  addRowClickHandler(table);
+  addRowClickHandler(initializeDataTable('#data-table'));
 }
 
 export { createDataTable, updateDataTable };
