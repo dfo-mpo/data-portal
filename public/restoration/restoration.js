@@ -2,7 +2,7 @@ import { dataset, selectors, geojsonLayers, geojsonSMULayers } from './global.js
 import { fetchData } from './getdata.js';
 import { getFromIndexedDB, saveToIndexedDB } from './indexedDB.js';
 import { readURLParams } from './utils.js';
-import { createDataTable } from './datatable.js';
+import { createDataTable, updateDataTable } from './datatable.js';
 import { createChart } from './chart.js';
 import { loadedCULayerData, loadedSMULayerData, createMap, updateMap } from './map.js';
 
@@ -141,7 +141,7 @@ function updateElements(data, urlParams) {
 
   populateSelectors(outputData, urlParams);
   updateMap(outputData);
-  createDataTable(outputData);
+  updateDataTable(outputData);
   createChart(outputData);
   
   window.history.replaceState(null, '', url);
@@ -226,6 +226,7 @@ async function initialize() {
     if(geojsonSMULayers) loadedSMULayerData.layers = await loadGeoJSONFiles(geojsonSMULayers);    
     createSelectors('selector-container', selectors);
     createMap();
+    createDataTable(data);
     const urlParams = readURLParams();
 
     data.forEach(item => {
@@ -238,7 +239,7 @@ async function initialize() {
     } else {
       populateSelectors(data);
       updateMap(data);
-      createDataTable(data);
+      updateDataTable(data, true);
       createChart(data);
     }
     
