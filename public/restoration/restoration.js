@@ -208,6 +208,7 @@ function showLoadingIndicator(show = false) {
   if (show) {
     selectorContainer.style.display = 'none';
     mapContainer.style.visibility = 'hidden';
+    mapContainer.style.height = '0px';
     resetButtonContainer.style.display = 'none';
   } else {
     loadingIndicator.style.display = 'none';
@@ -217,22 +218,53 @@ function showLoadingIndicator(show = false) {
   }
 }
 
+async function updateProgressIncremental(targetProgress) {
+  const progressElement = document.querySelector('.progress-bar');
+  const currentProgress = parseInt(progressElement.style.width, 10) || 0;
+
+  const incrementStep = 1; // increment by 1%
+  const delay = 10; // delay in ms for each step
+
+  for (let i = currentProgress; i <= targetProgress; i += incrementStep) {
+    progressElement.style.width = i + '%';
+    await new Promise(resolve => setTimeout(resolve, delay));
+  }
+}
+
 async function initialize() {
   showLoadingIndicator(true);
 
   try {
     const data = await fetchData(dataset.path);
-    if(geojsonLayers) loadedCULayerData.layers = await loadGeoJSONFiles(geojsonLayers);
-    if(geojsonSMULayers) loadedSMULayerData.layers = await loadGeoJSONFiles(geojsonSMULayers);    
-    createSelectors('selector-container', selectors);
-    createMap();
-    createDataTable(data);
-    const urlParams = readURLParams();
 
+    await updateProgressIncremental(10);
+
+    // if(geojsonLayers) loadedCULayerData.layers = await loadGeoJSONFiles(geojsonLayers);
+    // if(geojsonSMULayers) loadedSMULayerData.layers = await loadGeoJSONFiles(geojsonSMULayers);
+
+    if (geojsonLayers) {
+      loadedCULayerData.layers = await loadGeoJSONFiles(geojsonLayers);
+      await updateProgressIncremental(50);
+    }
+
+    if (geojsonSMULayers) {
+      loadedSMULayerData.layers = await loadGeoJSONFiles(geojsonSMULayers);
+      await updateProgressIncremental(80);
+    }
+
+    const urlParams = readURLParams();
     data.forEach(item => {
       cuIdLookup[item[dataset.headers.CU_Name]] = item[dataset.headers.CU_ID];
       smuIdLookup[item[dataset.headers.SMU_Name]] = item[dataset.headers.SMU_ID];
     });
+
+    await updateProgressIncremental(85);
+    
+    createSelectors('selector-container', selectors);
+    createMap();
+    createDataTable(data);
+
+    await updateProgressIncremental(90);
     
     if (Object.keys(urlParams).length > 0) {
       updateElements(data, urlParams);
@@ -244,6 +276,9 @@ async function initialize() {
     }
     
     registerEventListeners(data);
+
+    await updateProgressIncremental(100);
+
     showLoadingIndicator(false);
   } catch (error) {
     console.error('Error initializing application:', error);

@@ -247,6 +247,21 @@ button#reset-btn:hover{
   color: #333;
 }
 
+.progress {
+  width: 60%;
+  height: 20px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.progress-bar {
+  background-color: #286090;
+  height: 100%;
+  transition: width 0.3s linear; /* Use linear for constant speed animation */
+}
+
 /* ////////////////////////// */
 /* Responsive Styles */
 @media (max-width: 1023px) {
