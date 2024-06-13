@@ -1,5 +1,5 @@
 import { dataset, selectors, geojsonLayers, geojsonSMULayers } from './global.js';
-import { createDataTable } from './datatable.js';
+import { updateDataTable } from './datatable.js';
 
 let map;
 let markerGroup = L.layerGroup();
@@ -11,31 +11,31 @@ const loadedSMULayerData = { layers: '' };
 
 // MARKERS
 
-const markerStyles = {
-  base: {
-    radius: 8,
-    weight: 1,
-    color: 'white',
-    opacity: .8,
-    fillColor: 'rgba(255, 180, 60, 1)',
-    fillOpacity: .7
-  },
-  selected: {
-    radius: 10,
-    color: '#3388ff',
-    fillColor: '#3388ff',
-  },
-  unselected: {
-    opacity: .025,
-    fillColor: 'rgba(255, 180, 60, .2)',
-  },
-};
-
 function createMarkers(locationData) {
   let popupByClick = false;
   let popupTimeout;
 
-  const markerPopupContentMap = {
+  const markerStyles = {
+    base: {
+      radius: 8,
+      weight: 1,
+      color: 'white',
+      opacity: .8,
+      fillColor: 'rgba(255, 180, 60, 1)',
+      fillOpacity: .7
+    },
+    selected: {
+      radius: 10,
+      color: '#3388ff',
+      fillColor: '#3388ff',
+    },
+    unselected: {
+      opacity: .025,
+      fillColor: 'rgba(255, 180, 60, .2)',
+    },
+  };
+
+  const markerPopupContent = {
     title: dataset.headers.project_name,
     fields: [
       { key: dataset.headers.year, label: 'Fiscal Year' },
@@ -48,6 +48,62 @@ function createMarkers(locationData) {
     ]
   }
 
+  const createPopupContent = (location, markerPopupContent) => {
+    const title = markerPopupContent.title;
+    const fields = markerPopupContent.fields;
+
+    return `
+      <div class="popup-content"><h3>${location[title]}</h3>
+        <div class="popup-info">
+          ${generatePopupContent(location, fields)}
+        </div>
+      </div>
+    `;
+  };
+
+  const handleClick = (marker, coordinate, location, markerStyles) => {
+    if (!popupByClick) {
+      const clickedItemID = location['id'];
+      const filteredData = locationData.filter(item => item['id'] == clickedItemID);
+      updateDataTable(filteredData);
+
+      markerGroup.eachLayer(marker => {
+        marker.setStyle(markerStyles.unselected);
+      });
+      marker.setStyle(markerStyles.selected);
+
+      const adjustedCoordinate = getAdjustedCoordinate(coordinate, true);
+
+      makePopup(marker, createPopupContent(location, markerPopupContent), [0, -10]);            
+      map.flyTo(adjustedCoordinate, map.getZoom(), { animate: true, duration: .5 });
+
+      popupByClick = true;
+    }
+  };
+
+  const handleMouseOver = (marker, location) => {
+    if (!popupByClick) {
+      popupTimeout = setTimeout(() => {
+        makePopup(marker, createPopupContent(location, markerPopupContent), [0, -10]);
+      }, 100);
+    }
+  };
+
+  const handleMouseOut = (marker) => {
+    if (!popupByClick) {
+      clearTimeout(popupTimeout);
+      marker.closePopup();
+    }
+  }
+
+  const handlePopupClose = () => {
+    if (popupByClick) {
+      updateDataTable(locationData, true);
+      markerGroup.eachLayer(marker => marker.setStyle(markerStyles.base));
+      popupByClick = false;
+    }
+  }
+
   const createMarker = (location, markerStyles) => {
     const lat = location[dataset.headers.lat];
     const lng = location[dataset.headers.lng];
@@ -55,65 +111,14 @@ function createMarkers(locationData) {
     // skip to draw markers for projects without lat & lng
     if (!isNaN(lat) && !isNaN(lng)) {
       const coordinate = L.latLng(lat, lng);
-      let marker = L.circleMarker(coordinate, markerStyles.base).addTo(markerGroup);
-      let popupContent = '';
-
-      const title = markerPopupContentMap.title;
-      const fields = markerPopupContentMap.fields;
-
-      popupContent += `
-        <div class="popup-content"><h3>${location[title]}</h3>
-          <div class="popup-info">
-            ${generatePopupContent(location, fields)}
-          </div>
-        </div>
-      `;
+      const marker = L.circleMarker(coordinate, markerStyles.base).addTo(markerGroup);
 
       marker.on({
-        click: () => {
-          if (!popupByClick) {
-            const clickedItemID = location['id'];
-            const filteredData = locationData.filter(item => item['id'] == clickedItemID);
-            createDataTable(filteredData);
-
-            markerGroup.eachLayer(marker => {
-              marker.setStyle(markerStyles.unselected);
-            });
-            marker.setStyle(markerStyles.selected);
-
-            const adjustedCoordinate = getAdjustedCoordinate(coordinate, true);
-
-            makePopup(marker, popupContent, [0, -10]);            
-            map.flyTo(adjustedCoordinate, map.getZoom(), { animate: true, duration: .5 });
-
-            popupByClick = true;
-          }
-        },
-
-        mouseover: () => {
-          if (!popupByClick) {
-            popupTimeout = setTimeout(() => {
-              makePopup(marker, popupContent, [0, -10]);
-            }, 100);
-          }
-        },
-
-        mouseout: () => {
-          if (!popupByClick) {
-            clearTimeout(popupTimeout);
-            marker.closePopup();
-          }
-        },
-
-        popupclose: () => {
-          if (popupByClick) {
-            createDataTable(locationData);
-            markerGroup.eachLayer(marker => marker.setStyle(markerStyles.base));
-            popupByClick = false;
-          }
-        }
-      })
-
+        click: () => handleClick(marker, coordinate, location, markerStyles),
+        mouseover: () => handleMouseOver(marker, location),
+        mouseout: () => handleMouseOut(marker),
+        popupclose: () => handlePopupClose(),
+      });
     }
   }
 
@@ -408,7 +413,7 @@ function createGeoLayers(locationData, geojsonLayers, layerType, loadedGeoJsonDa
   const mapping = [...new Set(locationData.map(item => item[mappingKey.source]))];
 
   // define layer content. key: properties from geojson. label: display name
-  const layerPopupContentMap = {
+  const layerPopupContent = {
     'CU': {
       title: { key: 'CU', label: 'CU'},
       id: { key: 'FULL_CU_IN', label: 'CU Index' },
@@ -470,10 +475,10 @@ function createGeoLayers(locationData, geojsonLayers, layerType, loadedGeoJsonDa
         const properties = layer.feature.properties;
         let popupContent = '';
         
-        if (layerPopupContentMap[layerType]) {
-          const title = layerPopupContentMap[layerType].title;
-          const id = layerPopupContentMap[layerType].id;
-          const field = layerPopupContentMap[layerType].fields;
+        if (layerPopupContent[layerType]) {
+          const title = layerPopupContent[layerType].title;
+          const id = layerPopupContent[layerType].id;
+          const field = layerPopupContent[layerType].fields;
           
           popupContent += `
             <div class="popup-content">
