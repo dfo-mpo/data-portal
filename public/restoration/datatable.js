@@ -10,6 +10,8 @@ const subsetHeaders = [
   dataset.headers.lng,
 ];
 
+let originalDataTableHTML = '';
+
 function extractColumns(data, headers) {
   // extract all rows of the dataset with only selected headers
   return data.map(item => {
@@ -21,9 +23,9 @@ function extractColumns(data, headers) {
   });
 }
 
-function createStaticTable(data) {
+function createStaticTable(data, containerId) {
   // create data table
-  const dataTableDiv = document.getElementById('data-table-div');
+  const dataTableDiv = document.getElementById(containerId);
   const dataTable = document.createElement('table');
   dataTable.setAttribute('id', 'data-table');
   dataTable.setAttribute('class', 'display compact'); // 'hover compact row-border'
@@ -58,7 +60,8 @@ function createStaticTable(data) {
   dataBody.setAttribute('id', 'dataBody');
   dataTable.appendChild(dataBody);
   
-  // populate table rows with data 
+  // populate table rows with data
+  const fragment = document.createDocumentFragment();
   data.forEach(row => {
     const dataRow = document.createElement('tr');
 
@@ -72,8 +75,9 @@ function createStaticTable(data) {
     // status column
     dataRow.innerHTML += `<td>${row['status']}</td>`;
 
-    dataBody.appendChild(dataRow);
+    fragment.appendChild(dataRow);
   });
+  dataBody.appendChild(fragment);
 }
 
 function processSubset(subset, dataset) {
@@ -85,34 +89,16 @@ function processSubset(subset, dataset) {
   return subset.map(row => {
     const latKey = dataset.headers.lat;
     const lngKey = dataset.headers.lng;
-
     const status = isNaN(row[latKey] || row[lngKey]) ? 'Unmapped' : 'Mapped';
 
-    const {
-      [latKey]: lat,
-      [lngKey]: lng,
-      ...rest
-    } = row;
+    const { [latKey]: lat, [lngKey]: lng, ...rest } = row;
 
     return { ...rest, status };
   })
 }
 
-function createDataTable(data) {
-  const dataTableContainer = document.getElementById('data-table-container');
-  if(!dataTableContainer) return;
-
-  dataTableContainer.innerHTML = '<div id="data-table-div"></div>';
-
-  // create subset by columns, and then get unique data rows
-  const subset = getUniqueRows(extractColumns(data, subsetHeaders));
-
-  // get column of status by checking lat & lng
-  const processedSubset = processSubset(subset, dataset);
-
-  createStaticTable(processedSubset);
-
-  let table = new DataTable('#data-table', {
+function initializeDataTable(tableId) {
+  return new DataTable(tableId, {
     paging: false,
     scrollCollapse: true,
     // map-height - chart-height - padding - search-bar-height - header-row-height - bottom-info-height
@@ -141,8 +127,10 @@ function createDataTable(data) {
       bottomStart: 'info',
       bottomEnd: null,
     }
-  });
+  })
+}
 
+function addRowClickHandler(table) {
   function format(data) {
     return (
       `
@@ -170,4 +158,49 @@ function createDataTable(data) {
   });
 }
 
-export { createDataTable };
+function createDataTable(data) {
+  const dataTableContainer = document.getElementById('data-table-container');
+  if(!dataTableContainer) return;
+
+  let dataTableDiv = document.getElementById('data-table-div');
+  if (!dataTableDiv) {
+    dataTableDiv = document.createElement('div');
+    dataTableDiv.setAttribute('id', 'data-table-div');
+    dataTableContainer.appendChild(dataTableDiv);
+  }
+  
+  dataTableDiv.innerHTML = '';
+
+  // create subset by columns, and then get unique data rows
+  const subset = getUniqueRows(extractColumns(data, subsetHeaders));
+
+  // get column of status by checking lat & lng
+  const processedSubset = processSubset(subset, dataset);
+
+  createStaticTable(processedSubset, 'data-table-div');
+  
+  // save original table HTML
+  if (!originalDataTableHTML) {
+    originalDataTableHTML = dataTableDiv.innerHTML;
+  }
+}
+
+function updateDataTable(filteredData, useOriginal = false) {  
+  const dataTableDiv = document.getElementById('data-table-div');
+  if(!dataTableDiv) return;
+
+  if (useOriginal && originalDataTableHTML) {
+    dataTableDiv.innerHTML = originalDataTableHTML;
+  } else {
+    dataTableDiv.innerHTML = '';
+
+    const subset = getUniqueRows(extractColumns(filteredData, subsetHeaders));
+    const processedSubset = processSubset(subset, dataset);
+    createStaticTable(processedSubset, 'data-table-div');
+  }
+
+  const table = initializeDataTable('#data-table');
+  addRowClickHandler(table);
+}
+
+export { createDataTable, updateDataTable };
