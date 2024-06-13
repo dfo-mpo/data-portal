@@ -24,9 +24,8 @@ function csvToJSON(csvString) {
   const lines = csvString.split('\r\n');
   const headers = lines[0].split(',').map(header => header.trim()); // `.replace(/\s+/g, '')` Add this to remove spaces
   const jsonData = [];
-  const strToFloat = [dataset.headers.lat, dataset.headers.lng];
-
-  headers[0] = (headers[0] === '') ? 'id' : headers[0];
+  const requireStrToFloat = [dataset.headers.lat, dataset.headers.lng];
+  let count = 0;
 
   for (let i = 1; i < lines.length; i++) {
     const data = lines[i].split(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/).map(value => value.replace(/(^"|"$)/g, '').trim());
@@ -36,10 +35,14 @@ function csvToJSON(csvString) {
       
       for (let j = 0; j < headers.length; j++) {
         const value = data[j] || "(Blank)";
-        row[headers[j]] = !(strToFloat.includes(headers[j])) ? value : parseFloat(value);
+        row[headers[j]] = !(requireStrToFloat.includes(headers[j])) ? value : parseFloat(value);
       }
+
+      // create unique identifer column
+      row['id'] = count;
       jsonData.push(row);
     }
+    count += 1;
   }
 
   return jsonData;
