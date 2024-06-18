@@ -60,13 +60,46 @@ async function csv2json(inputFile) {
   });
 }
 
+function fetchAndParseCSV(filePath) {
+  return new Promise((resolve, reject) => {
+    fetch(filePath)
+      .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok ' + response.statusText);
+        }
+        return response.text();
+      })
+      .then(csvData => {
+        Papa.parse(csvData, {
+          header: true,
+          skipEmptyLines: true,
+          transform: function (value, header) {
+            return value === '' ? '(Blank)' : value;
+          },
+          complete: function(results) {
+            const jsonData = [];
+            results.data.forEach((row, index) => {
+              row.id = index.toString(); // Assigning index as 'id'
+              jsonData.push(row);
+            });
+            resolve(jsonData);
+          },
+          error: function(error) {
+            reject(error);
+          }
+        });
+      })
+      .catch(error => reject(error));
+  });
+}
+
 async function fetchData(csvfile) {
   try {
     const fileExists = await checkFileExistence(csvfile);
     if (!fileExists) {
       throw new Error('File does not exist.');
     }
-    const data = await csv2json(csvfile);
+    const data = await fetchAndParseCSV(csvfile);
     return data;
   } catch (error) {
     console.error('Error fetching data:', error);
