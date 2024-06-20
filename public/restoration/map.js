@@ -1,5 +1,5 @@
 import { dataset, selectors, geojsonLayers, geojsonSMULayers } from './global.js';
-import { updateDataTable } from './datatable.js';
+import { updateDataTable, filterTableById } from './datatable.js';
 
 let map;
 let markerGroup = L.layerGroup();
@@ -63,9 +63,7 @@ function createMarkers(locationData) {
 
   const handleClick = (marker, coordinate, location, markerStyles) => {
     if (!popupByClick) {
-      const clickedItemID = location['id'];
-      const filteredData = locationData.filter(item => item['id'] == clickedItemID);
-      updateDataTable(filteredData);
+      filterTableById(location['id']);
 
       markerGroup.eachLayer(marker => {
         marker.setStyle(markerStyles.unselected);

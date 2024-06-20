@@ -8,9 +8,11 @@ const subsetHeaders = [
   dataset.headers.species_name,
   dataset.headers.lat,
   dataset.headers.lng,
+  'id'
 ];
 
-let originalTableHTML = '';
+let staticTable;
+let table;
 
 function extractColumns(data, headers) {
   // extract all rows of the dataset with only selected headers
@@ -93,7 +95,7 @@ function processSubset(subset, dataset) {
 }
 
 function initializeDataTable(tableId) {
-  return new DataTable(tableId, {
+  const table = $(tableId).DataTable({
     paging: false,
     scrollCollapse: true,
     // map-height - chart-height - padding - search-bar-height - header-row-height - bottom-info-height
@@ -114,7 +116,8 @@ function initializeDataTable(tableId) {
       { target: 4, title: 'Species', visible: false },
       { target: 5, title: 'Site Latitude', visible: false },
       { target: 6, title: 'Site Longitude', visible: false },
-      { target: 7, title: 'Status'},
+      { target: 7, title: 'id', visible: false },
+      { target: 8, title: 'Status'},
     ],
     layout: {
       topStart: {
@@ -124,7 +127,9 @@ function initializeDataTable(tableId) {
       bottomStart: 'info',
       bottomEnd: null,
     }
-  })
+  });
+
+  return table;
 }
 
 function addRowClickHandler(table) {
@@ -177,34 +182,29 @@ function createDataTable(data) {
   // get column of status by checking lat & lng
   const processedSubset = processSubset(subset, dataset);
 
-  const table = createStaticTable(processedSubset, 'data-table');
+  staticTable = createStaticTable(processedSubset, 'data-table');
 
-  dataTableDiv.innerHTML = table.outerHTML;
+  dataTableDiv.innerHTML = staticTable.outerHTML;
 
   // create data table
-  addRowClickHandler(initializeDataTable('#data-table'));
-  
-  // save original table HTML
-  if (!originalTableHTML) {
-    originalTableHTML = table.outerHTML;
-  }
+  table = initializeDataTable('#data-table');
+  addRowClickHandler(table);
 }
 
 function updateDataTable(data, useOriginal = false) {  
   const dataTableDiv = document.getElementById('data-table-div');
   if(!dataTableDiv) return;
 
-  if (useOriginal && originalTableHTML) {
-    dataTableDiv.innerHTML = originalTableHTML;
+  if (useOriginal) {
+    table.search('').columns().search('').draw();
   } else {
-    const subset = getUniqueRows(extractColumns(data, subsetHeaders));
-    const processedSubset = processSubset(subset, dataset);
-    const table = createStaticTable(processedSubset, 'data-table');
-
-    dataTableDiv.innerHTML = table.outerHTML;
+    const ids = [...new Set(data.map(row => row['id']))];
+    table.column(7).search('^(' + ids.join('|') + ')$', true, false, true).draw();
   }
-
-  addRowClickHandler(initializeDataTable('#data-table'));
 }
 
-export { createDataTable, updateDataTable };
+function filterTableById(id) {
+  table.column(7).search('^' + id + '$', true, false).draw();
+}
+
+export { createDataTable, updateDataTable, filterTableById };

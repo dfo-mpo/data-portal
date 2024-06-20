@@ -141,7 +141,7 @@ function updateElements(data, urlParams) {
 
   populateSelectors(outputData, urlParams);
   updateMap(outputData);
-  updateDataTable(outputData);
+  updateDataTable(outputData, false);
   createChart(outputData);
   
   window.history.replaceState(null, '', url);
